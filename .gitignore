@@ -1,0 +1,89 @@
+# ==============================
+# FRONTEND (React / Node / Vite)
+# ==============================
+
+node_modules/
+dist/
+dist-ssr/
+build/
+*.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Vite cache
+.vite/
+
+# ==============================
+# BACKEND (Python / FastAPI)
+# ==============================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+backend/venv/
+.env/
+.venv/
+env/
+ENV/
+
+# Environment variables / secrets
+.env
+.env.local
+.env.production
+
+# Python build / packaging
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Type checker
+.mypy_cache/
+
+# ==============================
+# DATABASE / RUNTIME FILES
+# ==============================
+
+*.sqlite3
+*.db
+
+# ==============================
+# IDE / EDITOR
+# ==============================
+
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==============================
+# OS FILES
+# ==============================
+
+.DS_Store
+Thumbs.db

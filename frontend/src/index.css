@@ -1,0 +1,109 @@
+body{
+  background:#d9e7ef;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+/* CENTER PAGE */
+
+.page-wrapper{
+  display:flex;
+  justify-content:center;
+  padding:40px;
+}
+
+/* WHITE PAPER */
+
+.prescription-paper{
+  background:white;
+  width:850px;
+  padding:200px;
+  border-radius:6px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* HEADER */
+
+.header{
+  display:flex;
+  justify-content:space-between;
+}
+
+.section-title{
+  text-align:center;
+  margin:15px 0;
+}
+
+/* VITALS */
+
+.vitals{
+  display:flex;
+  justify-content:space-between;
+}
+
+/* INPUT STYLES */
+
+input{
+  border:none;
+  border-bottom:1px solid black;
+  outline:none;
+  margin-left:6px;
+}
+
+.line-input{
+  width:200px;
+}
+
+.small-input{
+  width:80px;
+}
+
+/* TEXT AREA */
+
+textarea{
+  width:100%;
+  min-height:70px;
+  border:1px solid #ccc;
+  border-radius:4px;
+  padding:6px;
+}
+
+/* SECTION */
+
+.section{
+  margin-top:15px;
+}
+
+/* MEDICINE ROW */
+
+.medicine-row{
+  display:flex;
+  gap:10px;
+  margin-bottom:6px;
+}
+
+/* PATIENT INFO LAYOUT */
+
+.patient-info-container{
+  display:flex;
+  justify-content:space-between;
+  gap:30px;
+  margin-bottom:20px;
+}
+
+.patient-info-left{
+  flex:1;
+}
+
+.patient-info-right{
+  flex:1;
+}
+
+button{
+  margin-top:10px;
+  padding:6px 10px;
+  background:#0077b6;
+  color:white;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+}
