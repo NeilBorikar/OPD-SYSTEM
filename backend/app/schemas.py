@@ -30,3 +30,4 @@ class Consultation(BaseModel):
 
     advice: str
     investigations: str
+
