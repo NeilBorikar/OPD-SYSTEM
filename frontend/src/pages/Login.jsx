@@ -26,7 +26,7 @@ function Login() {
 
       alert("Login Successful");
 
-      navigate("/");
+      navigate("/home");
 
     } catch (err) {
 
