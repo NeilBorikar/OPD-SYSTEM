@@ -41,3 +41,33 @@ export const getPatient = async (prn) => {
   return response.json();
 
 };
+export const loginDoctor = async (data) => {
+
+  const response = await fetch(`${API_BASE}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    throw new Error("Invalid credentials");
+  }
+
+  return response.json();
+};
+
+
+export const resetPassword = async (data) => {
+
+  const response = await fetch(`${API_BASE}/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  return response.json();
+};
