@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import patients
 from app.routes import consultations
-
+from app.routes import auth
 app = FastAPI()
 
 app.add_middleware(
@@ -16,7 +16,7 @@ app.add_middleware(
 
 app.include_router(patients.router)
 app.include_router(consultations.router)
-
+app.include_router(auth.router)
 
 @app.get("/")
 def home():

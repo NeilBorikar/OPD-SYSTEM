@@ -31,3 +31,11 @@ class Consultation(BaseModel):
     advice: str
     investigations: str
 
+class LoginSchema(BaseModel):
+    username: str
+    password: str
+
+
+class ResetPasswordSchema(BaseModel):
+    username: str
+    new_password: str
