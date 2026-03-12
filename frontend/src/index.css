@@ -155,3 +155,58 @@ button{
   margin-top:15px;
   font-size:14px;
 }
+/* AUTH PAGES THEME */
+
+.login-page {
+  min-height: 100vh;
+  background: #E0F2FE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 420px;
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 10px;
+  color: #0F172A;
+}
+
+.login-card input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #CBD5E1;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.login-card input:focus {
+  border-color: #06B6D4;
+  box-shadow: 0 0 0 2px rgba(6,182,212,0.15);
+}
+
+.login-card button {
+  padding: 12px;
+  background: #0891B2;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.login-card button:hover {
+  background: #0E7490;
+}

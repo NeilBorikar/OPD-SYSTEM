@@ -37,7 +37,9 @@ function ResetPassword() {
   };
 
   return (
-    <div>
+    <div className="login-page">
+
+    <div className="login-card">
 
       <h2>Reset Password</h2>
 
@@ -58,6 +60,7 @@ function ResetPassword() {
         Update Password
       </button>
 
+    </div>
     </div>
   );
 }
