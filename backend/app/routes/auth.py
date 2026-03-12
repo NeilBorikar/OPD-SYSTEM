@@ -5,8 +5,8 @@ router = APIRouter()
 
 # Hardcoded single doctor credentials (minimal system)
 doctor_credentials = {
-    "username": "doctor",
-    "password": "1234"
+    "username": "Dr.Rkd",
+    "password": "12345"
 }
 
 @router.post("/login")
