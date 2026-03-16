@@ -1,4 +1,4 @@
-const API_BASE = "https://opd-system-6e5p.onrender.com";
+const API_BASE = "http://127.0.0.1:8000";
 
 export const registerPatient = async (data) => {
 
@@ -68,6 +68,27 @@ export const resetPassword = async (data) => {
     },
     body: JSON.stringify(data)
   });
+
+  if (!response.ok) {
+    throw new Error("Error updating password");
+  }
+
+  return response.json();
+};
+
+export const registerDoctor = async (data) => {
+
+  const response = await fetch(`${API_BASE}/register-doctor`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    throw new Error("Registration failed");
+  }
 
   return response.json();
 };

@@ -210,3 +210,62 @@ button{
 .login-card button:hover {
   background: #0E7490;
 }
+
+/* PRINT BUTTON */
+
+.print-section {
+  margin-top: 30px;
+  text-align: center;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  text-align: center;
+}
+
+.print-btn {
+  background: #0ea5e9;
+  color: white;
+  padding: 12px 26px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.print-btn:hover {
+  background: #0284c7;
+}
+
+/* PRINT MODE */
+
+@media print {
+
+  body {
+    background: white;
+  }
+
+  .navbar,
+  .print-btn,
+  .print-section {
+    display: none !important;
+  }
+
+  .page-wrapper {
+    background: white !important;
+    padding: 0;
+  }
+
+  .prescription-paper {
+    box-shadow: none !important;
+    margin: 0;
+    width: 100%;
+    border-radius: 0;
+  }
+
+  textarea,
+  input {
+    border: none !important;
+    outline: none !important;
+  }
+
+}

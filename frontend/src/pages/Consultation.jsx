@@ -2,7 +2,9 @@ import { useState } from "react";
 import "../index.css";
 import { saveConsultation } from "../services/api";
 import { getPatient } from "../services/api";
-
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { useRef } from "react";
 function Consultation() {
 
   const [medicines, setMedicines] = useState([
@@ -92,11 +94,35 @@ function Consultation() {
   }
 
 };
+const pdfRef = useRef();
+
+const handleDownloadPDF = async () => {
+
+  const input = pdfRef.current;
+
+  const canvas = await html2canvas(input, {
+    scale: 2,            // ⭐ ultra clarity
+    useCORS: true,
+    scrollY: -window.scrollY
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+  pdf.save(`Prescription_${Date.now()}.pdf`);
+
+};
 
   return (
     <div className="page-wrapper">
 
-      <div className="prescription-paper">
+      <div className="prescription-paper" ref={pdfRef}>
 
         
 
@@ -122,14 +148,14 @@ function Consultation() {
               onChange={handleChange}
             /></p>
             <p><b>PRN / PSN :</b> <input
-  name="prn"
-  className="line-input"
-  value={formData.prn}
-  onChange={(e) => {
-    handleChange(e);
-    fetchPatient(e.target.value);
-  }}
-/></p>
+            name="prn"
+            className="line-input"
+            value={formData.prn}
+            onChange={(e) => {
+            handleChange(e);
+            fetchPatient(e.target.value);
+            }}
+            /></p>
           </div>
 
           <div className="patient-info-right">
@@ -234,7 +260,25 @@ function Consultation() {
           <textarea name="investigations" value={formData.investigations} onChange={handleChange}/>
         </div>
 
+        <div className="print-section">
+        <button className="print-btn" onClick={() => window.print()}>
+        🖨 Print Prescription
+        </button>
+        </div>
+
         <div style={{ marginTop: "20px", textAlign: "center" }}>
+
+          <div className="print-section">
+
+          <button className="print-btn" onClick={() => window.print()}>
+          🖨 Print
+        </button>
+
+        <button className="print-btn" onClick={handleDownloadPDF}>
+          📄 Download PDF
+        </button>
+
+</div>
   <button
     onClick={handleSubmit}
     style={{

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -10,6 +11,7 @@ import ResetPassword from "./pages/ResetPassword";
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
 
         {/* default route */}

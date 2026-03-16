@@ -9,3 +9,4 @@ db = client[settings.DATABASE_NAME]
 
 patients_collection = db["patients"]
 consultations_collection = db["consultations"]
+doctors_collection = db["doctors"]
