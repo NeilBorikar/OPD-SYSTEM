@@ -34,12 +34,24 @@ async def get_patients_for_reception():
 
 @router.get("/patients/ordered")
 async def get_patients_ordered():
-    # Sort by severityIndex descending (highest severity first)
-    cursor = patients_collection.find({}).sort("severityIndex", -1)
+    # Sort by severityIndex descending based on custom weights string to int
+    cursor = patients_collection.find({})
     patients = []
+    
+    # Custom severity ranking
+    severity_weights = {
+        "critical": 3,
+        "severe": 2,
+        "normal": 1,
+        "none": 0
+    }
+    
     async for patient in cursor:
         patient["_id"] = str(patient["_id"])
         patients.append(patient)
+        
+    # Sort by mapped severity weight
+    patients.sort(key=lambda p: severity_weights.get((p.get("severityIndex") or "").lower(), 0), reverse=True)
     return patients
 
 @router.get("/patient/{prn}")

@@ -100,7 +100,7 @@ class PatientRegisterSchema(BaseModel):
     gender: str
     assigned_room: Optional[str] = None
     assigned_doctor: Optional[str] = None
-    severityIndex: Optional[int] = None
+    severityIndex: Optional[str] = None
     tasks_for_nurse: Optional[List[str]] = []
 
 class PatientLoginSchema(BaseModel):

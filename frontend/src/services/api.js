@@ -41,9 +41,8 @@ export const getPatient = async (prn) => {
   return response.json();
 
 };
-export const loginDoctor = async (data) => {
-
-  const response = await fetch(`${API_BASE}/login`, {
+export const loginUnified = async (data) => {
+  const response = await fetch(`${API_BASE}/login-unified`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

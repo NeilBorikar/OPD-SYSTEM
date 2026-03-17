@@ -123,4 +123,23 @@ async def login_receptionist(data: ReceptionistLoginSchema):
     if not rec or rec["password"] != data.password:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    return {"message": "Login successful", "receptionist_id": str(rec["_id"])}
+# --- Unified Auth ---
+
+@router.post("/login-unified")
+async def login_unified(data: LoginSchema):
+    # Check doctors
+    doctor = await doctors_collection.find_one({"username": data.username})
+    if doctor and doctor["password"] == data.password:
+        return {"message": "Login successful", "role": "doctor", "id": str(doctor["_id"])}
+        
+    # Check nurses
+    nurse = await nurses_collection.find_one({"username": data.username})
+    if nurse and nurse["password"] == data.password:
+        return {"message": "Login successful", "role": "nurse", "id": str(nurse["_id"])}
+        
+    # Check receptionists
+    rec = await receptionists_collection.find_one({"username": data.username})
+    if rec and rec["password"] == data.password:
+        return {"message": "Login successful", "role": "receptionist", "id": str(rec["_id"])}
+        
+    raise HTTPException(status_code=401, detail="Invalid credentials")

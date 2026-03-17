@@ -81,7 +81,15 @@ function DoctorDashboard() {
             <tr key={p.prn}>
               <td>{p.prn}</td>
               <td>{p.name}</td>
-              <td>{p.severityIndex || "N/A"}</td>
+              <td style={{ 
+                color: p.severityIndex === "critical" ? "red" : 
+                       p.severityIndex === "severe" ? "orange" : 
+                       "green", 
+                fontWeight: "bold",
+                textTransform: "capitalize"
+              }}>
+                {p.severityIndex || "Normal"}
+              </td>
               <td>{p.assigned_room || "N/A"}</td>
               <td>
                 <ul style={{ paddingLeft: "20px", margin: 0 }}>

@@ -35,7 +35,8 @@ function Consultation() {
     diagnosis: "",
 
     advice: "",
-    investigations: ""
+    investigations: "",
+    severityIndex: "normal"
   });
 
   const handleChange = (e) => {
@@ -159,6 +160,18 @@ const handleDownloadPDF = async () => {
           </div>
 
           <div className="patient-info-right">
+            <p><b>Severity Index :</b> 
+              <select 
+                name="severityIndex" 
+                value={formData.severityIndex} 
+                onChange={handleChange}
+                style={{marginLeft: "10px", padding: "5px"}}
+              >
+                <option value="normal">Normal</option>
+                <option value="severe">Severe</option>
+                <option value="critical">Critical</option>
+              </select>
+            </p>
             <p><b>Department :</b> Neurosurgery</p>
             <p><b>Consultation Date :</b> <input type="date"/></p>
             <p><b>Consultant :</b> Dr. Rakesh Kumar Das</p>

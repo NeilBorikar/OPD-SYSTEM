@@ -38,16 +38,8 @@ const Home = () => {
 
       <div style={styles.grid}>
         <div style={styles.roleCard} onClick={() => navigate("/login")}>
-          <h3>Doctor Portal</h3>
-          <p>Login as Doctor to manage patients & assign tasks.</p>
-        </div>
-        <div style={styles.roleCard} onClick={() => navigate("/nurse-login")}>
-          <h3>Nurse Portal</h3>
-          <p>Login as Nurse to view your assigned patients & tasks.</p>
-        </div>
-        <div style={styles.roleCard} onClick={() => navigate("/receptionist-login")}>
-          <h3>Receptionist Portal</h3>
-          <p>Login as Receptionist to view patient assignments & rooms.</p>
+          <h3>Staff Portal</h3>
+          <p>Login as Doctor, Nurse, or Receptionist to access your dashboard.</p>
         </div>
         <div style={styles.roleCard} onClick={() => navigate("/patient-login")}>
           <h3>Patient Portal</h3>
