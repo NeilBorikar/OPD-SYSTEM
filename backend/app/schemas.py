@@ -42,6 +42,7 @@ class Consultation(BaseModel):
 
     advice: str
     investigations: str
+    severityIndex: Optional[str] = "normal"
 
 class LoginSchema(BaseModel):
     username: str

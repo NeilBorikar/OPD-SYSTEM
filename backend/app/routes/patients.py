@@ -7,11 +7,13 @@ router = APIRouter()
 
 @router.post("/register")
 async def register_patient(data: PatientRegisterSchema):
-    existing_patient = await patients_collection.find_one({"prn": data.prn})
+    prn_str = str(data.prn).strip()
+    existing_patient = await patients_collection.find_one({"prn": prn_str})
     if existing_patient:
         raise HTTPException(status_code=400, detail="PRN already exists")
     
     patient_doc = data.dict()
+    patient_doc["prn"] = prn_str # Ensure string
     result = await patients_collection.insert_one(patient_doc)
     return {"message": "Patient registered", "id": str(result.inserted_id)}
 
@@ -74,13 +76,14 @@ async def update_patient(prn: str, data: dict):
 
 @router.post("/patient/{prn}/assign-task")
 async def assign_task(prn: str, data: TaskAssignSchema):
-    patient = await patients_collection.find_one({"prn": prn})
+    prn_str = str(prn).strip()
+    patient = await patients_collection.find_one({"prn": prn_str})
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
         
     task_entry = {"task": data.task, "nurse_username": data.nurse_username}
     await patients_collection.update_one(
-        {"prn": prn},
+        {"prn": prn_str},
         {"$push": {"tasks_for_nurse": task_entry}}
     )
     return {"message": "Task assigned successfully"}

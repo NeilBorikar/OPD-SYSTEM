@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.database import consultations_collection
+from app.database import consultations_collection, patients_collection
 from app.schemas import Consultation
 
 router = APIRouter()
@@ -14,12 +14,20 @@ async def create_consultation(data: Consultation):
     consultation = data.dict()
 
     # Ensure PRN stored as string
-    consultation["prn"] = str(consultation["prn"]).strip()
+    prn_str = str(consultation["prn"]).strip()
+    consultation["prn"] = prn_str
 
     result = await consultations_collection.insert_one(consultation)
+    
+    # Update Patient Document with new Severity Index
+    severity = consultation.get("severityIndex", "normal")
+    await patients_collection.update_one(
+        {"prn": prn_str},
+        {"$set": {"severityIndex": severity}}
+    )
 
     return {
-        "message": "Consultation saved",
+        "message": "Consultation saved and patient severity updated",
         "id": str(result.inserted_id)
     }
 

@@ -15,7 +15,9 @@ const Register = () => {
     consultationDate: "",
     department: "",
     consultant: "",
-    regNo: ""
+    regNo: "",
+    password: "1234", // Default password for patient login
+    severityIndex: "normal"
   });
 
   const handleChange = (e) => {
