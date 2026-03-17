@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { loginDoctor } from "../services/api";
+import { loginNurse } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
-
+function NurseLogin() {
   const [form, setForm] = useState({
     username: "",
     password: ""
@@ -19,53 +18,35 @@ function Login() {
   };
 
   const handleLogin = async () => {
-
     try {
-
-      await loginDoctor(form);
-
+      await loginNurse(form);
       alert("Login Successful");
-
-      navigate("/home");
-
+      navigate("/nurse-dashboard", { state: { username: form.username } });
     } catch (err) {
       console.error(err);
       alert("Invalid credentials");
     }
-
   };
 
   return (
     <div className="login-page">
-
-      <h2>Doctor Login</h2>
-
+      <h2>Nurse Login</h2>
       <input
         name="username"
         placeholder="Username"
         onChange={handleChange}
       />
-
       <input
         type="password"
         name="password"
         placeholder="Password"
         onChange={handleChange}
       />
-
       <button onClick={handleLogin}>
         Login
       </button>
-
-      <p
-        style={{ cursor: "pointer", color: "blue" }}
-        onClick={() => navigate("/reset")}
-      >
-        Forgot Password?
-      </p>
-
     </div>
   );
 }
 
-export default Login;
+export default NurseLogin;

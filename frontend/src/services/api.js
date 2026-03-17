@@ -92,3 +92,61 @@ export const registerDoctor = async (data) => {
 
   return response.json();
 };
+
+export const loginNurse = async (data) => {
+  const response = await fetch(`${API_BASE}/login-nurse`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) throw new Error("Invalid credentials");
+  return response.json();
+};
+
+export const loginReceptionist = async (data) => {
+  const response = await fetch(`${API_BASE}/login-receptionist`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) throw new Error("Invalid credentials");
+  return response.json();
+};
+
+export const loginPatient = async (data) => {
+  const response = await fetch(`${API_BASE}/login-patient`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) throw new Error("Invalid credentials");
+  return response.json();
+};
+
+export const getPatientsOrdered = async () => {
+  const response = await fetch(`${API_BASE}/patients/ordered`);
+  return response.json();
+};
+
+export const getPatientsReception = async () => {
+  const response = await fetch(`${API_BASE}/patients/reception`);
+  return response.json();
+};
+
+export const updatePatient = async (prn, data) => {
+  const response = await fetch(`${API_BASE}/patient/${prn}/update`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return response.json();
+};
+
+export const assignTask = async (prn, data) => {
+  const response = await fetch(`${API_BASE}/patient/${prn}/assign-task`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return response.json();
+};

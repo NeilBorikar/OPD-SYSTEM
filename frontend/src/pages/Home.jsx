@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-
 
 const Home = () => {
   const [query, setQuery] = useState("");
@@ -19,11 +17,7 @@ const Home = () => {
 };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      style={styles.container}
-    >
+    <div style={styles.container}>
       <h1>Patient Lookup</h1>
 
       <input
@@ -37,7 +31,7 @@ const Home = () => {
       <button onClick={handleSearch} style={styles.button}>
         Search
       </button>
-    </motion.div>
+    </div>
   );
 };
 

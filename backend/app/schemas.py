@@ -71,3 +71,43 @@ class DoctorSchema(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
+class NurseRegisterSchema(BaseModel):
+    username: str
+    email: str
+    password: str
+    full_name: str
+
+class NurseLoginSchema(BaseModel):
+    username: str
+    password: str
+
+class ReceptionistRegisterSchema(BaseModel):
+    username: str
+    email: str
+    password: str
+    full_name: str
+
+class ReceptionistLoginSchema(BaseModel):
+    username: str
+    password: str
+
+class PatientRegisterSchema(BaseModel):
+    prn: str
+    name: str
+    password: str
+    age: int
+    gender: str
+    assigned_room: Optional[str] = None
+    assigned_doctor: Optional[str] = None
+    severityIndex: Optional[int] = None
+    tasks_for_nurse: Optional[List[str]] = []
+
+class PatientLoginSchema(BaseModel):
+    prn: str
+    password: str
+
+class TaskAssignSchema(BaseModel):
+    task: str
+    nurse_username: str
+    prn: str
