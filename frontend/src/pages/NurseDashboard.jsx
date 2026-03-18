@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 function NurseDashboard() {
   const [patients, setPatients] = useState([]);
   const location = useLocation();
-  const username = location.state?.username || "Unknown";
+  const username = location.state?.username || localStorage.getItem("nurse_username") || "Unknown";
 
   const fetchPatients = async () => {
     try {

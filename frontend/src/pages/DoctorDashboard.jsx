@@ -91,7 +91,30 @@ function DoctorDashboard() {
               }}>
                 {p.severityIndex || "Normal"}
               </td>
-              <td>{p.assigned_room || "N/A"}</td>
+              <td>
+                <input 
+                  defaultValue={p.assigned_room || ""} 
+                  onBlur={async (e) => {
+                    const newRoom = e.target.value;
+                    if (newRoom !== p.assigned_room) {
+                      try {
+                        const API_URL = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://corepulse-ysxr.onrender.com";
+                        await fetch(`${API_URL}/patient/${p.prn}/update`, {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ assigned_room: newRoom })
+                        });
+                        alert(`Room updated for ${p.name}`);
+                        fetchPatients();
+                      } catch (err) {
+                        alert("Update failed");
+                      }
+                    }
+                  }}
+                  placeholder="Set Room"
+                  style={{ width: "80px", padding: "5px" }}
+                />
+              </td>
               <td>
                 <ul style={{ paddingLeft: "20px", margin: 0 }}>
                   {(p.tasks_for_nurse || []).map((t, i) => (

@@ -21,6 +21,7 @@ function NurseLogin() {
     try {
       await loginNurse(form);
       alert("Login Successful");
+      localStorage.setItem("nurse_username", form.username);
       navigate("/nurse-dashboard", { state: { username: form.username } });
     } catch (err) {
       console.error(err);

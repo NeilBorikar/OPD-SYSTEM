@@ -25,6 +25,7 @@ function Login() {
       if (res.role === "doctor") {
         navigate("/doctor-dashboard");
       } else if (res.role === "nurse") {
+        localStorage.setItem("nurse_username", form.username);
         navigate("/nurse-dashboard", { state: { username: form.username } });
       } else if (res.role === "receptionist") {
         navigate("/reception-dashboard");
