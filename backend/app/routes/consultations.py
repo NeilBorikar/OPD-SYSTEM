@@ -19,15 +19,31 @@ async def create_consultation(data: Consultation):
 
     result = await consultations_collection.insert_one(consultation)
     
-    # Update Patient Document with new Severity Index
+    # Ensure Patient exists in patients_collection so they show up on Dashboards
+    existing_patient = await patients_collection.find_one({"prn": prn_str})
     severity = consultation.get("severityIndex", "normal")
-    await patients_collection.update_one(
-        {"prn": prn_str},
-        {"$set": {"severityIndex": severity}}
-    )
+    
+    if not existing_patient:
+        # Auto-create basic patient record if it doesn't exist
+        new_patient = {
+            "prn": prn_str,
+            "name": consultation.get("patient_name", "Unknown"),
+            "age": consultation.get("age", 0),
+            "sex": consultation.get("sex", "Other"),
+            "severityIndex": severity,
+            "tasks_for_nurse": [],
+            "password": "1234" # Default password
+        }
+        await patients_collection.insert_one(new_patient)
+    else:
+        # Update existing patient with latest severity
+        await patients_collection.update_one(
+            {"prn": prn_str},
+            {"$set": {"severityIndex": severity}}
+        )
 
     return {
-        "message": "Consultation saved and patient severity updated",
+        "message": "Consultation saved and patient record synced",
         "id": str(result.inserted_id)
     }
 

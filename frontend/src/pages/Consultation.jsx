@@ -17,7 +17,7 @@ function Consultation() {
   const [formData, setFormData] = useState({
     patient_name: "",
     age: "",
-    gender: "",
+    sex: "",
     address: "",
     prn: "",
 
@@ -84,7 +84,7 @@ function Consultation() {
         ...prev,
         patient_name: data.name,
         age: data.age,
-        gender: data.sex,
+        sex: data.sex,
         address: data.address
       }));
 
@@ -141,7 +141,7 @@ const handleDownloadPDF = async () => {
             onChange={handleChange}
             /></p>
             <p><b>Age :</b> <input name="age" className="small-input" value={formData.age} onChange={handleChange}/></p>
-            <p><b>Gender :</b> <input name="gender" className="small-input" value={formData.gender} onChange={handleChange}/></p>
+            <p><b>Sex :</b> <input name="sex" className="small-input" value={formData.sex} onChange={handleChange}/></p>
             <p><b>Address :</b> <input
               name="address"
               className="line-input"

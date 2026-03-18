@@ -22,7 +22,7 @@ class Consultation(BaseModel):
 
     patient_name: str
     age: int
-    gender: str
+    sex: str
     prn: str
 
     bp: str
@@ -98,11 +98,17 @@ class PatientRegisterSchema(BaseModel):
     name: str
     password: str
     age: int
-    gender: str
+    sex: str  # Changed from gender to sex to match frontend
+    address: Optional[str] = None
+    phone: Optional[str] = None
+    consultationDate: Optional[str] = None
+    department: Optional[str] = None
+    consultant: Optional[str] = None
+    regNo: Optional[str] = None
     assigned_room: Optional[str] = None
     assigned_doctor: Optional[str] = None
     severityIndex: Optional[str] = None
-    tasks_for_nurse: Optional[List[str]] = []
+    tasks_for_nurse: Optional[List[dict]] = [] # Changed to list of dicts for task objects
 
 class PatientLoginSchema(BaseModel):
     prn: str
