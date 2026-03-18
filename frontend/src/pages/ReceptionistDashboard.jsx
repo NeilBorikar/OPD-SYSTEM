@@ -36,8 +36,54 @@ function ReceptionistDashboard() {
             <tr key={p.prn}>
               <td>{p.prn}</td>
               <td>{p.name}</td>
-              <td>{p.assigned_room ? <span style={{ color: "green", fontWeight: "bold" }}>{p.assigned_room}</span> : <span style={{ color: "red" }}>Unassigned</span>}</td>
-              <td>{p.assigned_doctor || "Not Assigned"}</td>
+              <td>
+                <input 
+                  defaultValue={p.assigned_room || ""} 
+                  onBlur={async (e) => {
+                    const newValue = e.target.value;
+                    if (newValue !== p.assigned_room) {
+                      try {
+                        const API_URL = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://corepulse-ysxr.onrender.com";
+                        await fetch(`${API_URL}/patient/${p.prn}/update`, {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ assigned_room: newValue })
+                        });
+                        alert(`Room updated for ${p.name}`);
+                        fetchPatients();
+                      } catch (err) {
+                        alert("Update failed");
+                      }
+                    }
+                  }}
+                  placeholder="Set Room"
+                  style={{ width: "80px", padding: "5px", color: "green", fontWeight: "bold" }}
+                />
+              </td>
+              <td>
+                <input 
+                  defaultValue={p.assigned_doctor || ""} 
+                  onBlur={async (e) => {
+                    const newValue = e.target.value;
+                    if (newValue !== p.assigned_doctor) {
+                      try {
+                        const API_URL = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://corepulse-ysxr.onrender.com";
+                        await fetch(`${API_URL}/patient/${p.prn}/update`, {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ assigned_doctor: newValue })
+                        });
+                        alert(`Doctor updated for ${p.name}`);
+                        fetchPatients();
+                      } catch (err) {
+                        alert("Update failed");
+                      }
+                    }
+                  }}
+                  placeholder="Set Doctor"
+                  style={{ width: "120px", padding: "5px" }}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
