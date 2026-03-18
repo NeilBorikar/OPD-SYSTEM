@@ -53,7 +53,7 @@ async def get_patients_ordered():
         patients.append(patient)
         
     # Sort by mapped severity weight
-    patients.sort(key=lambda p: severity_weights.get((p.get("severityIndex") or "").lower(), 0), reverse=True)
+    patients.sort(key=lambda p: severity_weights.get(str(p.get("severityIndex") or "none").lower(), 0), reverse=True)
     return patients
 
 @router.get("/patient/{prn}")

@@ -1,4 +1,6 @@
-const API_BASE = "https://corepulse-ysxr.onrender.com";
+const API_BASE = window.location.hostname === "localhost" 
+  ? "http://localhost:8000" 
+  : "https://corepulse-ysxr.onrender.com";
 
 export const registerPatient = async (data) => {
 

@@ -11,6 +11,7 @@ function DoctorDashboard() {
   const fetchPatients = async () => {
     try {
       const data = await getPatientsOrdered();
+      console.log("Patients data fetched:", data);
       setPatients(data);
     } catch (err) {
       console.error(err);

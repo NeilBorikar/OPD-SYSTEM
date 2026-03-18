@@ -10,6 +10,7 @@ function NurseDashboard() {
   const fetchPatients = async () => {
     try {
       const data = await getPatientsOrdered();
+      console.log("Nurse Dashboard fetching patients:", data);
       setPatients(data);
     } catch (err) {
       console.error(err);
