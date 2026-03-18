@@ -117,4 +117,3 @@ class PatientLoginSchema(BaseModel):
 class TaskAssignSchema(BaseModel):
     task: str
     nurse_username: str
-    prn: str
