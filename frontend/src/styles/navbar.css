@@ -1,0 +1,239 @@
+/* Modern Hospital Navbar Styles */
+.navbar {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  border-bottom: 1px solid rgba(14, 165, 233, 0.2) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: white !important;
+  flex: 0 0 auto;
+  min-width: 300px;
+}
+
+.navbar-brand:hover {
+  color: white !important;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white !important;
+  line-height: 1.2;
+  font-family: 'Playfair Display', serif;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: white !important;
+  background-clip: unset !important;
+  text-shadow: none !important;
+}
+
+.tagline {
+  font-size: 0.7rem;
+  color: #0ea5e9;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.nav-links-desktop {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  font-size: 0.85rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  min-width: 120px;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transition: all 0.4s ease;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.nav-link:hover::before,
+.nav-link.active::before {
+  opacity: 1;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+  height: 100%;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: white;
+  transform: translateY(-1px);
+  border-color: rgba(14, 165, 233, 0.3);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+}
+
+.nav-link.login-btn {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: white;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.25);
+  padding: 0.6rem 1.5rem;
+  font-size: 0.85rem;
+  margin-left: 1rem;
+}
+
+.nav-link.login-btn:hover {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
+  transform: translateY(-2px);
+}
+
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.75rem;
+}
+
+.hamburger-line {
+  width: 28px;
+  height: 3px;
+  background: white;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  right: 0;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem 0;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  background: rgba(14, 165, 233, 0.1);
+  color: white;
+}
+
+.mobile-nav-link.login-btn {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: white;
+  margin: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.mobile-nav-link.login-btn:hover {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-links-desktop {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
+  .navbar-container {
+    padding: 0 1.5rem;
+  }
+  
+  .brand-text h1 {
+    font-size: 1.3rem;
+  }
+  
+  .tagline {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 1rem;
+  }
+  
+  .brand-text h1 {
+    font-size: 1.2rem;
+  }
+  
+  .navbar-brand {
+    min-width: 200px;
+  }
+}

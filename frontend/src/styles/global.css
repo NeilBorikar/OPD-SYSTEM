@@ -1,0 +1,216 @@
+/* Global Consistent Theming for All Pages - Enhanced Beauty */
+
+/* Force consistent navbar background on all pages */
+.navbar {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) !important;
+  border-bottom: 1px solid rgba(14, 165, 233, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(20px) !important;
+  position: relative !important;
+}
+
+.navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #0ea5e9, transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Force consistent body background on all pages */
+body {
+  background: radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%), radial-gradient(circle at 40% 60%, rgba(34, 197, 94, 0.05) 0%, transparent 50%), linear-gradient(135deg, #f8fafc 0%, #f0f9ff 30%, #e0f2fe 70%, #dbeafe 100%) !important;
+  min-height: 100vh !important;
+  position: relative !important;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 25% 25%, rgba(14, 165, 233, 0.03) 0%, transparent 40%), radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.03) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: -1;
+  animation: float 20s ease-in-out infinite;
+}
+
+/* Enhanced card styling with glassmorphism */
+.card, .section, .container, .main-content {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.card::before, .section::before, .container::before, .main-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.5), transparent);
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+/* Enhanced button styling with depth */
+.btn, button {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%) !important;
+  color: white !important;
+  border: 1px solid rgba(14, 165, 233, 0.4) !important;
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn::before, button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn:hover, button:hover {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%) !important;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn:hover::before, button:hover::before {
+  left: 100%;
+}
+
+/* Enhanced input styling */
+input, textarea, select {
+  border-color: rgba(14, 165, 233, 0.2) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 12px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1), 0 4px 16px rgba(14, 165, 233, 0.2) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Beautiful typography - Exclude navbar and specific components */
+h1:not(.navbar-brand h1):not(.brand-text h1), 
+h2:not(.navbar-brand h2):not(.brand-text h2), 
+h3:not(.navbar-brand h3):not(.brand-text h3), 
+h4:not(.navbar-brand h4):not(.brand-text h4), 
+h5:not(.navbar-brand h5):not(.brand-text h5), 
+h6:not(.navbar-brand h6):not(.brand-text h6) {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure navbar brand text is always visible */
+.navbar-brand h1,
+.brand-text h1,
+.navbar-brand .h1,
+.brand-text .h1 {
+  color: white !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: white !important;
+  background-clip: unset !important;
+  text-shadow: none !important;
+}
+
+/* Smooth animations */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Enhanced page backgrounds */
+.login-page, .home-page, .register-page, .consultation-page, .history-page {
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+    linear-gradient(135deg, #f8fafc 0%, #f0f9ff 25%, #e0f2fe 75%, #dbeafe 100%) !important;
+  position: relative !important;
+}
+
+/* Loading states */
+.loading {
+  position: relative !important;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(14, 165, 233, 0.3);
+  border-top: 2px solid #0ea5e9;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Animation delays for spinner */
+.animation-delay-150 {
+  animation-delay: 150ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Enhanced hover effects for interactive elements */
+.interactive-element {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+}
+
+.interactive-element:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3) !important;
+}
+
+/* Beautiful focus states */
+.focus-ring:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2) !important;
+  border-color: #0ea5e9 !important;
+}

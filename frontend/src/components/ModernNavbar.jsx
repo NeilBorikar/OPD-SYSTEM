@@ -1,17 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
+import "../styles/navbar.css";
+import "../styles/global.css";
 
-const Navbar = () => {
+const ModernNavbar = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActiveRoute = (path) => location.pathname === path;
 
   const navLinks = [
-    { to: "/home", label: "Patient Lookup", icon: "" },
-    { to: "/register", label: "Register Patient", icon: "" },
-    { to: "/consultation", label: "Consultation", icon: "" },
-    { to: "/history", label: "History", icon: "" },
+    { to: "/home", label: "Patient Lookup" },
+    { to: "/register", label: "Register Patient" },
+    { to: "/consultation", label: "Consultation" },
+    { to: "/history", label: "History" },
   ];
 
   return (
@@ -74,4 +76,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default ModernNavbar;

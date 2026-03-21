@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import ModernNavbar from "./components/ModernNavbar";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -20,7 +20,7 @@ import PatientDashboard from "./pages/PatientDashboard";
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      <ModernNavbar />
       <Routes>
 
         {/* default route */}
@@ -30,6 +30,8 @@ function App() {
         <Route path="/reset" element={<ResetPassword />} />
 
         <Route path="/patient-login" element={<PatientLogin />} />
+        <Route path="/nurse-login" element={<NurseLogin />} />
+        <Route path="/receptionist-login" element={<ReceptionistLogin />} />
 
         {/* protected routes (temporarily open) */}
         <Route path="/home" element={<Home />} />
