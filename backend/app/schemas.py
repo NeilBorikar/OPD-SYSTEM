@@ -27,9 +27,9 @@ class Consultation(BaseModel):
     diagnosis: str
 
     medicines: List[Medicine]
-
     advice: str
-    investigations: str
+    investigations: str = None
+    next_visit_date: str = None
 
 class LoginSchema(BaseModel):
     username: str
