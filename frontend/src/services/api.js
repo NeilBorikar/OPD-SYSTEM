@@ -151,3 +151,30 @@ export const assignTask = async (prn, data) => {
   });
   return response.json();
 };
+
+export const setDoctorSession = async (data) => {
+  const response = await fetch(`${API_BASE}/slots/set-session`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return response.json();
+};
+
+export const getSlots = async (date = null) => {
+  let url = `${API_BASE}/slots/`;
+  if (date) url += `?date=${date}`;
+  const response = await fetch(url);
+  return response.json();
+};
+
+export const bookSlot = async (slotId, patientPrn) => {
+  const response = await fetch(`${API_BASE}/slots/book?slot_id=${slotId}&patient_prn=${patientPrn}`, {
+    method: "POST"
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || "Booking failed");
+  }
+  return response.json();
+};

@@ -117,3 +117,19 @@ class PatientLoginSchema(BaseModel):
 class TaskAssignSchema(BaseModel):
     task: str
     nurse_username: str
+
+class SlotSchema(BaseModel):
+    id: Optional[PyObjectId] = None
+    doctor_username: str
+    time: str  # Format: "HH:mm - HH:mm"
+    is_booked: bool = False
+    patient_prn: Optional[str] = None
+    date: str  # Format: "YYYY-MM-DD"
+
+    class Config:
+        arbitrary_types_allowed = True
+
+class DoctorScheduleRequest(BaseModel):
+    doctor_username: str
+    start_time: str  # Format: "HH:mm"
+    end_time: str    # Format: "HH:mm"

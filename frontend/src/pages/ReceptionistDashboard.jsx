@@ -88,6 +88,74 @@ function ReceptionistDashboard() {
           ))}
         </tbody>
       </table>
+      <hr style={{ margin: "30px 0" }} />
+
+      <h3>Doctor Slot Bookings (Today)</h3>
+      <div style={{ padding: "15px", border: "1px solid #ccc", borderRadius: "8px", backgroundColor: "#f9f9f9" }}>
+        <SlotMonitor />
+      </div>
+    </div>
+  );
+}
+
+function SlotMonitor() {
+  const [slots, setSlots] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSlots = async () => {
+      try {
+        const API_URL = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://corepulse-ysxr.onrender.com";
+        const response = await fetch(`${API_URL}/slots/`);
+        const data = await response.json();
+        setSlots(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSlots();
+  }, []);
+
+  if (loading) return <p>Loading slots...</p>;
+
+  const groupedSlots = slots.reduce((acc, slot) => {
+    if (!acc[slot.doctor_username]) acc[slot.doctor_username] = [];
+    acc[slot.doctor_username].push(slot);
+    return acc;
+  }, {});
+
+  return (
+    <div>
+      {Object.keys(groupedSlots).length > 0 ? (
+        Object.keys(groupedSlots).map(doctor => (
+          <div key={doctor} style={{ marginBottom: "20px" }}>
+            <h4>Dr. {doctor}</h4>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "10px" }}>
+              {groupedSlots[doctor].map(s => (
+                <div
+                  key={s._id}
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    backgroundColor: s.is_booked ? "#e3f2fd" : "#fff",
+                    textAlign: "center"
+                  }}
+                >
+                  <div style={{ fontWeight: "bold" }}>{s.time}</div>
+                  <div style={{ color: s.is_booked ? "#1976d2" : "#757575" }}>
+                    {s.is_booked ? `Patient: ${s.patient_prn}` : "Empty"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      ) : (
+        <p>No doctor slots generated for today yet.</p>
+      )}
     </div>
   );
 }

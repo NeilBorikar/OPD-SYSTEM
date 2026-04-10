@@ -29,6 +29,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/reset" element={<ResetPassword />} />
 
+        <Route path="/nurse-login" element={<NurseLogin />} />
+        <Route path="/receptionist-login" element={<ReceptionistLogin />} />
         <Route path="/patient-login" element={<PatientLogin />} />
 
         {/* protected routes (temporarily open) */}

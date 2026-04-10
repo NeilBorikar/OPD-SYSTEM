@@ -63,6 +63,92 @@ function PatientDashboard() {
       ) : (
         <p>No past medical history or medications found.</p>
       )}
+
+      <hr style={{ margin: "30px 0" }} />
+
+      <h3>Book a Consultation Slot</h3>
+      <div style={{ padding: "15px", border: "1px solid #ccc", borderRadius: "8px", backgroundColor: "#f9f9f9" }}>
+        <p>Select an available slot to book your appointment for today.</p>
+        <AvailableSlots prn={prn} />
+      </div>
+    </div>
+  );
+}
+
+function AvailableSlots({ prn }) {
+  const [slots, setSlots] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchSlots = async () => {
+    try {
+      const data = await getSlots();
+      setSlots(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSlots();
+  }, []);
+
+  const handleBook = async (slotId) => {
+    try {
+      await bookSlot(slotId, prn);
+      alert("Slot booked successfully!");
+      fetchSlots();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  if (loading) return <p>Loading slots...</p>;
+
+  // Group slots by doctor
+  const groupedSlots = slots.reduce((acc, slot) => {
+    if (!acc[slot.doctor_username]) acc[slot.doctor_username] = [];
+    acc[slot.doctor_username].push(slot);
+    return acc;
+  }, {});
+
+  return (
+    <div>
+      {Object.keys(groupedSlots).length > 0 ? (
+        Object.keys(groupedSlots).map(doctor => (
+          <div key={doctor} style={{ marginBottom: "20px" }}>
+            <h4>Dr. {doctor}</h4>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "10px" }}>
+              {groupedSlots[doctor].map(s => (
+                <button
+                  key={s._id}
+                  onClick={() => handleBook(s._id)}
+                  disabled={s.is_booked}
+                  style={{
+                    padding: "10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    backgroundColor: s.is_booked ? "#eee" : "#fff",
+                    cursor: s.is_booked ? "not-allowed" : "pointer",
+                    textAlign: "center"
+                  }}
+                >
+                  <div>{s.time}</div>
+                  <div style={{ fontSize: "0.8em", color: s.is_booked ? "#999" : "#2e7d32" }}>
+                    {s.is_booked ? (s.patient_prn === prn ? "Your Booking" : "Booked") : "Available"}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))
+      ) : (
+        <p>No slots available for today yet. Please check back later.</p>
+      )}
+    </div>
+  );
+}
     </div>
   );
 }

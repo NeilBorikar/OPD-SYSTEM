@@ -23,6 +23,7 @@ function Login() {
       alert("Login Successful");
 
       if (res.role === "doctor") {
+        localStorage.setItem("doctor_username", form.username);
         navigate("/doctor-dashboard");
       } else if (res.role === "nurse") {
         localStorage.setItem("nurse_username", form.username);
