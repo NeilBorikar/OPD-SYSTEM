@@ -149,8 +149,5 @@ function AvailableSlots({ prn }) {
     </div>
   );
 }
-    </div>
-  );
-}
 
 export default PatientDashboard;
