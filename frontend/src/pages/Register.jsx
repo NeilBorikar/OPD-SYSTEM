@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { registerPatient } from "../services/api";
 import { useNavigate } from "react-router-dom";
-
+import { motion } from "framer-motion";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -15,195 +15,146 @@ const Register = () => {
     consultationDate: "",
     department: "",
     consultant: "",
-    regNo: ""
+    regNo: "",
+    email: "",
   });
+  const [status, setStatus] = useState(null);
 
   const handleChange = (e) => {
     setPatient({
       ...patient,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
+    if (status) setStatus(null);
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus(null);
+    try {
+      const result = await registerPatient(patient);
+      console.log("Registered:", result);
+      setStatus({ type: "ok", text: "Patient registered. Opening consultation…" });
+      const prn = patient.prn;
+      setPatient({
+        name: "",
+        age: "",
+        sex: "",
+        address: "",
+        phone: "",
+        prn: "",
+        consultationDate: "",
+        department: "",
+        consultant: "",
+        regNo: "",
+        email: "",
+      });
+      setTimeout(() => navigate("/consultation", { state: { prn } }), 500);
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setStatus({ type: "err", text: "Registration failed. Check details and try again." });
+    }
+  };
 
-  e.preventDefault();
-
-  try {
-
-    const result = await registerPatient(patient);
-
-    console.log("Registered:", result);
-
-    alert("Patient Registered Successfully!");
-
-    // reset form
-    setPatient({
-      name: "",
-      age: "",
-      sex: "",
-      address: "",
-      phone: "",
-      prn: "",
-      consultationDate: "",
-      department: "",
-      consultant: "",
-      regNo: ""
-    });
-   
-    navigate("/consultation", { state: { prn: patient.prn } });
-
-  } catch (error) {
-
-    console.error("Registration failed:", error);
-
-    alert("Error registering patient");
-
-  }
-};
+  const field = (props) => <input {...props} onChange={handleChange} />;
 
   return (
-    <div style={styles.container}>
+    <div className="page-bleed">
+      <motion.div
+        className="page-hero"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <h1>Register new patient</h1>
+        <p>Capture demographics and visit context. You can continue straight into consultation.</p>
+      </motion.div>
 
-      <h1 style={styles.title}>Register New Patient</h1>
+      <motion.form
+        onSubmit={handleSubmit}
+        className="card-surface register-grid"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: 0.08 }}
+      >
+        {status && (
+          <div
+            className={`auth-banner ${status.type === "ok" ? "auth-banner--ok" : "auth-banner--err"}`}
+            role="status"
+          >
+            {status.text}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} style={styles.form}>
-
-        <input
-          name="name"
-          placeholder="Patient Name"
-          value={patient.name}
-          onChange={handleChange}
-          style={styles.input}
-        />
-
-        <input
-          name="age"
-          placeholder="Age"
-          value={patient.age}
-          onChange={handleChange}
-          style={styles.input}
-        />
-
-        <select
-          name="sex"
-          value={patient.sex}
-          onChange={handleChange}
-          style={styles.input}
-        >
-          <option value="">Select Sex</option>
+        <p className="register-section-title">Identity</p>
+        {field({
+          name: "name",
+          placeholder: "Patient name",
+          value: patient.name,
+          required: true,
+        })}
+        {field({
+          name: "age",
+          placeholder: "Age",
+          value: patient.age,
+        })}
+        <select name="sex" value={patient.sex} onChange={handleChange} required>
+          <option value="">Sex</option>
           <option>Male</option>
           <option>Female</option>
           <option>Other</option>
         </select>
 
-        <input
-          name="address"
-          placeholder="Address"
-          value={patient.address}
-          onChange={handleChange}
-          style={styles.input}
-        />
+        <p className="register-section-title">Contact</p>
+        {field({
+          name: "address",
+          placeholder: "Address",
+          value: patient.address,
+        })}
+        {field({
+          name: "phone",
+          placeholder: "Phone number",
+          value: patient.phone,
+        })}
+        {field({
+          name: "email",
+          placeholder: "Email address",
+          value: patient.email,
+        })}
 
-        <input
-          
-          name="phone"
-          placeholder="Phone Number"
-          value={patient.phone}
-          onChange={handleChange}
-          style={styles.input}
-        />
+        <p className="register-section-title">Visit</p>
+        {field({
+          name: "prn",
+          placeholder: "PRN / PSN number",
+          value: patient.prn,
+        })}
+        {field({
+          type: "date",
+          name: "consultationDate",
+          value: patient.consultationDate,
+        })}
+        {field({
+          name: "department",
+          placeholder: "Department",
+          value: patient.department,
+        })}
+        {field({
+          name: "consultant",
+          placeholder: "Consultant name",
+          value: patient.consultant,
+        })}
+        {field({
+          name: "regNo",
+          placeholder: "Registration number",
+          value: patient.regNo,
+        })}
 
-        <input
-          name="prn"
-          placeholder="PRN / PSN Number"
-          value={patient.prn}
-          onChange={handleChange}
-          style={styles.input}
-        />
-
-        <input
-          type="date"
-          name="consultationDate"
-          value={patient.consultationDate}
-          onChange={handleChange}
-          style={styles.input}
-        />
-
-        <input
-          name="department"
-          placeholder="Department"
-          value={patient.department}
-          onChange={handleChange}
-          style={styles.input}
-        />
-
-        <input
-          name="consultant"
-          placeholder="Consultant Name"
-          value={patient.consultant}
-          onChange={handleChange}
-          style={styles.input}
-        />
-
-        <input
-          name="regNo"
-          placeholder="Registration Number"
-          value={patient.regNo}
-          onChange={handleChange}
-          style={styles.input}
-        />
-
-        <button type="submit" style={styles.button}>
-          Register Patient
+        <button type="submit" className="btn btn-primary">
+          Register &amp; continue
         </button>
-
-      </form>
+      </motion.form>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-    backgroundColor: "#E0F2FE",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "40px"
-  },
-
-  title: {
-    marginBottom: "20px",
-    color: "#0F172A"
-  },
-
-  form: {
-    backgroundColor: "white",
-    padding: "30px",
-    borderRadius: "12px",
-    width: "400px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-    boxShadow: "0 6px 16px rgba(0,0,0,0.1)"
-  },
-
-  input: {
-    padding: "10px",
-    borderRadius: "6px",
-    border: "1px solid #06B6D4"
-  },
-
-  button: {
-    padding: "12px",
-    backgroundColor: "#06B6D4",
-    border: "none",
-    color: "white",
-    borderRadius: "8px",
-    cursor: "pointer",
-    marginTop: "10px"
-  }
 };
 
 export default Register;

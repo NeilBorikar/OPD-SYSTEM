@@ -2,132 +2,114 @@ import { useState } from "react";
 import HistoryCard from "../components/HistoryCard";
 import { getPatientHistory } from "../services/api";
 import { useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const History = () => {
-
   const location = useLocation();
   const initialPRN = location.state?.prn || "";
   const [search, setSearch] = useState(initialPRN);
   const [records, setRecords] = useState([]);
   const [searched, setSearched] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-
-  // Mock database (later MongoDB)
-  
-
- const handleSearch = async () => {
-
-  if (!search) return;
-
-  try {
-
-    const data = await getPatientHistory(search);
-    console.log("API Response:", data);
-    setRecords(data);
-
-  } catch (error) {
-
-    console.error("Error fetching history:", error);
-
-  }
-
-  setSearched(true);
-};
+  const handleSearch = async () => {
+    if (!search.trim()) return;
+    setLoading(true);
+    try {
+      const data = await getPatientHistory(search);
+      console.log("API Response:", data);
+      setRecords(data);
+    } catch (error) {
+      console.error("Error fetching history:", error);
+      setRecords([]);
+    } finally {
+      setLoading(false);
+      setSearched(true);
+    }
+  };
 
   return (
-    <div style={styles.container}>
+    <div className="page-bleed history-layout">
+      <motion.div
+        className="page-hero"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <h1>Patient history</h1>
+        <p>Pull prior consultations by PRN or identifier to review care over time.</p>
+      </motion.div>
 
-      <h1 style={styles.title}>Patient History</h1>
-
-      {/* SEARCH BAR */}
-
-      <div style={styles.searchBox}>
-        <input
-          type="text"
-          placeholder="Enter Patient Name or ID"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={styles.input}
-        />
-
-        <button onClick={handleSearch} style={styles.button}>
-          Search
+      <motion.div
+        className="search-panel"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.06 }}
+      >
+        <div className="search-wrap">
+          <input
+            type="text"
+            placeholder="Patient name or ID…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            aria-label="Search patient history"
+          />
+        </div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={handleSearch}
+          disabled={loading}
+        >
+          {loading ? "Searching…" : "Search"}
         </button>
-      </div>
+      </motion.div>
 
-      {/* RESULTS */}
-
-      <div style={styles.results}>
-
+      <div>
         {!searched && (
-          <p style={styles.message}>
-            Search by PRN to view consultation history
-          </p>
+          <motion.div
+            className="card-surface history-empty"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.35 }}
+          >
+            <div className="history-empty-icon" aria-hidden>
+              ◎
+            </div>
+            <p style={{ margin: 0, fontSize: "1rem" }}>Search by PRN to load consultation history</p>
+            <p style={{ margin: "0.5rem 0 0", fontSize: "0.875rem", opacity: 0.85 }}>
+              Results appear as expandable cards below.
+            </p>
+          </motion.div>
         )}
 
         {searched && records.length === 0 && (
-          <p style={styles.message}>
-            No history found for this patient
-          </p>
+          <motion.div
+            className="card-surface history-empty"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="history-empty-icon" aria-hidden>
+              ∅
+            </div>
+            <p style={{ margin: 0 }}>No history found for this patient.</p>
+          </motion.div>
         )}
 
-        {records.map((record) => (
-          <HistoryCard key={record._id} record={record} />
+        {records.map((record, i) => (
+          <motion.div
+            key={record._id}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: Math.min(i * 0.06, 0.36) }}
+          >
+            <HistoryCard record={record} />
+          </motion.div>
         ))}
-
       </div>
-
     </div>
   );
-};
-
-const styles = {
-
-  container: {
-    minHeight: "100vh",
-    padding: "40px",
-    backgroundColor: "#E0F2FE"
-  },
-
-  title: {
-    textAlign: "center",
-    marginBottom: "30px",
-    color: "#0F172A"
-  },
-
-  searchBox: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "10px",
-    marginBottom: "30px"
-  },
-
-  input: {
-    padding: "12px",
-    width: "300px",
-    borderRadius: "8px",
-    border: "1px solid #06B6D4"
-  },
-
-  button: {
-    padding: "12px 20px",
-    backgroundColor: "#06B6D4",
-    border: "none",
-    color: "white",
-    borderRadius: "8px",
-    cursor: "pointer"
-  },
-
-  results: {
-    maxWidth: "700px",
-    margin: "auto"
-  },
-
-  message: {
-    textAlign: "center",
-    color: "#475569"
-  }
-
 };
 
 export default History;
