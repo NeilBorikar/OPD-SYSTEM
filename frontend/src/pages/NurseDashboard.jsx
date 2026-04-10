@@ -128,6 +128,7 @@ function NurseDashboard() {
             </tbody>
           </table>
         </div>
+      </section>
       <section className="table-card" style={{ marginTop: "30px" }}>
         <h3>Doctor Slot Bookings (Today)</h3>
         <div style={{ padding: "15px", backgroundColor: "#fff", borderRadius: "8px" }}>
