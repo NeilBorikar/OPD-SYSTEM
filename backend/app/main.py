@@ -15,6 +15,13 @@ scheduler = AsyncIOScheduler()
 
 @app.on_event("startup")
 async def startup_event():
+    # Verify DB connection and doctor count
+    try:
+        doctor_count = await db["doctors"].count_documents({})
+        print(f"DEBUG: Backend started. Connected to DB: '{db.name}'. Found {doctor_count} doctors.")
+    except Exception as e:
+        print(f"DEBUG: Database connection failed: {str(e)}")
+
     # Run reminders check every day at 10:00 AM
     scheduler.add_job(process_reminders, 'cron', hour=10, minute=0, args=[db])
     scheduler.start()
