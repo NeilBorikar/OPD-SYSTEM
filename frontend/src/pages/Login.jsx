@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { loginUnified } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "../styles/login.css";
+import "../styles/global.css";
 
 function Login() {
   const [form, setForm] = useState({
     username: "",
     password: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -18,6 +21,12 @@ function Login() {
   };
 
   const handleLogin = async () => {
+    if (!form.username || !form.password) {
+      alert("Please enter both username and password");
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const res = await loginUnified(form);
       alert("Login Successful");
@@ -34,33 +43,91 @@ function Login() {
     } catch (err) {
       console.error(err);
       alert("Invalid credentials / User not found");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleLogin();
     }
   };
 
   return (
     <div className="login-page">
-      <h2>Staff Login (Doctor / Nurse / Receptionist)</h2>
-      <input
-        name="username"
-        placeholder="Username"
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        onChange={handleChange}
-      />
-      <button onClick={handleLogin}>
-        Login
-      </button>
+      <div className="login-background">
+        <div className="login-card">
+          <div className="login-header">
+            <div className="login-logo">
+              <span className="logo-icon">🏥</span>
+            </div>
+            <h2>Staff Login</h2>
+            <p className="login-subtitle">Doctor / Nurse / Receptionist</p>
+          </div>
 
-      <p
-        style={{ cursor: "pointer", color: "blue", marginTop: "15px" }}
-        onClick={() => navigate("/reset")}
-      >
-        Forgot Password?
-      </p>
+          <div className="login-form">
+            <div className="form-group">
+              <label className="form-label">Username</label>
+              <div className="input-wrapper">
+                <span className="input-icon">👤</span>
+                <input
+                  name="username"
+                  type="text"
+                  placeholder="Enter your username"
+                  onChange={handleChange}
+                  onKeyPress={handleKeyPress}
+                  className="form-input"
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <div className="input-wrapper">
+                <input
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  onChange={handleChange}
+                  onKeyPress={handleKeyPress}
+                  className="form-input"
+                  style={{ paddingLeft: '1.25rem' }}
+                />
+              </div>
+            </div>
+
+            <button 
+              onClick={handleLogin}
+              disabled={isLoading}
+              className={`login-btn ${isLoading ? 'loading' : ''}`}
+            >
+              {isLoading ? (
+                <span className="loading-spinner">⏳</span>
+              ) : (
+                <span>Login to Dashboard</span>
+              )}
+            </button>
+          </div>
+
+          <div className="login-footer">
+            <Link to="/reset" className="forgot-password-link">
+              Forgot Password?
+            </Link>
+          </div>
+
+          <div className="login-divider">
+            <span>OR</span>
+          </div>
+
+          <div className="alternative-logins">
+            <Link to="/patient-login" className="alt-login-btn">
+              <span className="alt-icon">👥</span>
+              <span>Patient Login</span>
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
