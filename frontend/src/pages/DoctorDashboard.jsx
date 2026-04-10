@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getPatientsOrdered, assignTask, setDoctorSession, getSlots } from "../services/api";
 
 function DoctorDashboard() {
@@ -8,16 +8,16 @@ function DoctorDashboard() {
   const [slots, setSlots] = useState([]);
   const doctorUsername = localStorage.getItem("doctor_username");
 
-  const fetchPatients = async () => {
+  const fetchPatients = useCallback(async () => {
     try {
       const data = await getPatientsOrdered();
       setPatients(data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  const fetchSlots = async () => {
+  const fetchSlots = useCallback(async () => {
     try {
       const data = await getSlots();
       // Filter slots for this doctor
@@ -26,12 +26,12 @@ function DoctorDashboard() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [doctorUsername]);
 
   useEffect(() => {
     fetchPatients();
     fetchSlots();
-  }, []);
+  }, [fetchPatients, fetchSlots]);
 
   const handleSetSession = async () => {
     try {
@@ -187,7 +187,7 @@ function DoctorDashboard() {
                         });
                         alert(`Room updated for ${p.name}`);
                         fetchPatients();
-                      } catch (err) {
+                      } catch {
                         alert("Update failed");
                       }
                     }

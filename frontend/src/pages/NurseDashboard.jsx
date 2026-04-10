@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getPatientsOrdered } from "../services/api";
 import { useLocation } from "react-router-dom";
 
@@ -8,20 +8,18 @@ function NurseDashboard() {
   const location = useLocation();
   const username = location.state?.username || localStorage.getItem("nurse_username") || "Unknown";
 
-  useEffect(() => {
-
-  const fetchPatients = async () => {
+  const fetchPatients = useCallback(async () => {
     try {
       const data = await getPatientsOrdered();
       setPatients(data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
-  fetchPatients();
-
-}, []);
+  useEffect(() => {
+    fetchPatients();
+  }, [fetchPatients]);
 
   const filteredPatients = patients.filter((p) => {
     const query = searchText.trim().toLowerCase();
@@ -143,21 +141,22 @@ function SlotMonitor() {
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSlots = async () => {
-      try {
-        const API_URL = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://corepulse-ysxr.onrender.com";
-        const response = await fetch(`${API_URL}/slots/`);
-        const data = await response.json();
-        setSlots(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSlots();
+  const fetchSlots = useCallback(async () => {
+    try {
+      const API_URL = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://corepulse-ysxr.onrender.com";
+      const response = await fetch(`${API_URL}/slots/`);
+      const data = await response.json();
+      setSlots(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchSlots();
+  }, [fetchSlots]);
 
   if (loading) return <p>Loading slots...</p>;
 

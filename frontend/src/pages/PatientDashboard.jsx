@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
-import { getPatientHistory, getPatient } from "../services/api";
+import { getPatientHistory, getPatient, getSlots, bookSlot } from "../services/api";
 
 function PatientDashboard() {
   const [history, setHistory] = useState([]);
@@ -79,7 +79,7 @@ function AvailableSlots({ prn }) {
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchSlots = async () => {
+  const fetchSlots = useCallback(async () => {
     try {
       const data = await getSlots();
       setSlots(data);
@@ -88,11 +88,11 @@ function AvailableSlots({ prn }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchSlots();
-  }, []);
+  }, [fetchSlots]);
 
   const handleBook = async (slotId) => {
     try {

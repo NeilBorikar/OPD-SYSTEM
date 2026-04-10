@@ -1,17 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getPatientsReception } from "../services/api";
 
 function ReceptionistDashboard() {
   const [patients, setPatients] = useState([]);
 
-  const fetchPatients = async () => {
+  const fetchPatients = useCallback(async () => {
     try {
       const data = await getPatientsReception();
       setPatients(data);
     } catch (err) {
       console.error("Error fetching patients: ", err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchPatients();
@@ -51,7 +51,7 @@ function ReceptionistDashboard() {
                         });
                         alert(`Room updated for ${p.name}`);
                         fetchPatients();
-                      } catch (err) {
+                      } catch {
                         alert("Update failed");
                       }
                     }
@@ -75,7 +75,7 @@ function ReceptionistDashboard() {
                         });
                         alert(`Doctor updated for ${p.name}`);
                         fetchPatients();
-                      } catch (err) {
+                      } catch {
                         alert("Update failed");
                       }
                     }
