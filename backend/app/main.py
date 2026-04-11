@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import patients, consultations, staff, slots, tasks
-from app.routes import auth
+from app.routes import patients, consultations, slots, tasks, auth
 app = FastAPI()
 
 app.add_middleware(
