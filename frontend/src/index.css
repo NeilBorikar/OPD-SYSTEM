@@ -1253,7 +1253,119 @@ textarea {
   textarea,
   input {
     border: none !important;
-    outline: none !important;
-  }
+}
+
+/* Slot Monitor Premium Styles */
+.slot-monitor-container {
+  margin-top: 1rem;
+}
+
+.doctor-slot-group {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.slot-card {
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--gray-200);
+  background: white;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 90px;
+}
+
+.slot-card:hover {
+  border-color: var(--accent-300);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.slot-card.booked {
+  background: var(--accent-50);
+  border-color: var(--accent-200);
+}
+
+.slot-card.completed {
+  background: var(--gray-50);
+  border-color: var(--gray-200);
+  opacity: 0.7;
+}
+
+.slot-time {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--gray-800);
+  margin-bottom: 8px;
+}
+
+.slot-card.completed .slot-time {
+  color: var(--gray-400);
+  text-decoration: line-through;
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.available {
+  color: var(--success-600);
+  background: var(--success-50);
+}
+
+.status-badge.booked {
+  color: var(--accent-700);
+  background: var(--accent-100);
+}
+
+.status-badge.completed {
+  color: var(--gray-500);
+  background: var(--gray-200);
+}
+
+.end-session-btn-styled {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: var(--accent-500);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.end-session-btn-styled:hover {
+  background: var(--accent-600);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.no-slots-alert {
+  text-align: center;
+  padding: 48px;
+  background: var(--gray-50);
+  border: 2px dashed var(--gray-200);
+  border-radius: 16px;
+  color: var(--gray-500);
 }
 

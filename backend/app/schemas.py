@@ -123,6 +123,7 @@ class SlotSchema(BaseModel):
     doctor_username: str
     time: str  # Format: "HH:mm - HH:mm"
     is_booked: bool = False
+    is_completed: bool = False
     patient_prn: Optional[str] = None
     date: str  # Format: "YYYY-MM-DD"
 

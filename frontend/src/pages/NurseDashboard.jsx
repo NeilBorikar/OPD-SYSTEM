@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getPatientsOrdered, getNurseTasks, completeTask, getSlots } from "../services/api";
 import { useLocation, Link } from "react-router-dom";
+import SlotMonitor from "../components/SlotMonitor";
 
 function NurseDashboard() {
   const [patients, setPatients] = useState([]);
@@ -54,10 +55,6 @@ function NurseDashboard() {
   });
 
   const totalPatients = patients.length;
-  const yourTaskCount = patients.reduce((count, patient) => {
-    const tasks = patient.tasks_for_nurse || [];
-    return count + tasks.filter((task) => task.nurse_username === username).length;
-  }, 0);
 
   return (
     <div className="nurse-dashboard">
@@ -198,74 +195,14 @@ function NurseDashboard() {
           </table>
         </div>
       </section>
+
       <section className="table-card" style={{ marginTop: "30px" }}>
         <h3>Doctor Slot Bookings (Today)</h3>
-        <div style={{ padding: "15px", backgroundColor: "#fff", borderRadius: "8px" }}>
-          <SlotMonitor />
-        </div>
+        <p style={{ fontSize: "0.9rem", color: "#64748b", marginBottom: "15px" }}>
+          View live appointment status. 
+        </p>
+        <SlotMonitor showActions={false} />
       </section>
-    </div>
-  );
-}
-
-function SlotMonitor() {
-  const [slots, setSlots] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchSlots = useCallback(async () => {
-    try {
-      const data = await getSlots();
-      setSlots(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchSlots();
-  }, [fetchSlots]);
-
-  if (loading) return <p>Loading slots...</p>;
-
-  const groupedSlots = slots.reduce((acc, slot) => {
-    if (!acc[slot.doctor_username]) acc[slot.doctor_username] = [];
-    acc[slot.doctor_username].push(slot);
-    return acc;
-  }, {});
-
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-      {Object.keys(groupedSlots).length > 0 ? (
-        Object.keys(groupedSlots).map(doctor => (
-          <div key={doctor} style={{ flex: "1 1 300px", border: "1px solid #eee", padding: "10px", borderRadius: "8px" }}>
-            <h4 style={{ margin: "0 0 10px 0" }}>Dr. {doctor}</h4>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: "8px" }}>
-              {groupedSlots[doctor].map(s => (
-                <div
-                  key={s._id}
-                  style={{
-                    padding: "8px",
-                    border: "1px solid #ddd",
-                    borderRadius: "4px",
-                    backgroundColor: s.is_booked ? "#e3f2fd" : "#f5f5f5",
-                    textAlign: "center",
-                    fontSize: "0.85em"
-                  }}
-                >
-                  <div style={{ fontWeight: "bold" }}>{s.time}</div>
-                  <div style={{ color: s.is_booked ? "#1976d2" : "#757575" }}>
-                    {s.is_booked ? `PRN: ${s.patient_prn}` : "Empty"}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))
-      ) : (
-        <p>No doctor slots generated for today yet.</p>
-      )}
     </div>
   );
 }

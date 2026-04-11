@@ -130,6 +130,17 @@ export const getNurseTasks = async (username, status = null, date = null) => {
   return response.json();
 };
 
+export const completeSlot = async (slotId) => {
+  const response = await fetch(`${API_BASE}/slots/${slotId}/complete`, {
+    method: "PUT"
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || "Failed to complete slot");
+  }
+  return response.json();
+};
+
 export const loginReceptionist = async (data) => {
   const response = await fetch(`${API_BASE}/login-receptionist`, {
     method: "POST",
