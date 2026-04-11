@@ -134,6 +134,7 @@ class DoctorScheduleRequest(BaseModel):
     doctor_username: str
     start_time: str  # Format: "HH:mm"
     end_time: str    # Format: "HH:mm"
+    date: Optional[str] = None # Format: "YYYY-MM-DD"
 
 class TaskSchema(BaseModel):
     id: Optional[PyObjectId] = None

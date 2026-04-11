@@ -5,7 +5,11 @@ import SlotMonitor from "../components/SlotMonitor";
 function DoctorDashboard() {
   const [patients, setPatients] = useState([]);
   const [taskForm, setTaskForm] = useState({ prn: "", task: "", nurse_username: "" });
-  const [sessionTime, setSessionTime] = useState({ start: "09:00", end: "14:00" });
+  const [sessionTime, setSessionTime] = useState({ 
+    start: "09:00", 
+    end: "14:00",
+    date: new Date().toISOString().split('T')[0] 
+  });
   const doctorUsername = localStorage.getItem("doctor_username");
 
   const fetchPatients = useCallback(async () => {
@@ -26,7 +30,8 @@ function DoctorDashboard() {
       await setDoctorSession({
         doctor_username: doctorUsername,
         start_time: sessionTime.start,
-        end_time: sessionTime.end
+        end_time: sessionTime.end,
+        date: sessionTime.date
       });
       alert("Visiting hours set and slots generated!");
       // Force refresh SlotMonitor
@@ -82,6 +87,14 @@ function DoctorDashboard() {
             >
               {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
+            <label style={{ fontWeight: "600" }}>Date:</label>
+            <input 
+              type="date"
+              value={sessionTime.date}
+              onChange={e => setSessionTime({...sessionTime, date: e.target.value})}
+              min={new Date().toISOString().split('T')[0]}
+              style={{ padding: "8px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+            />
             <button 
               onClick={handleSetSession} 
               style={{ 

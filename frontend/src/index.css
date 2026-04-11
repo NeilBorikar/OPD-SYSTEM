@@ -1306,6 +1306,16 @@ textarea {
   opacity: 0.7;
 }
 
+.slot-card.user-booked {
+  background: var(--accent-600);
+  border-color: var(--accent-700);
+  color: white !important;
+}
+
+.slot-card.user-booked .slot-time {
+  color: white !important;
+}
+
 .slot-time {
   font-weight: 700;
   font-size: 0.95rem;

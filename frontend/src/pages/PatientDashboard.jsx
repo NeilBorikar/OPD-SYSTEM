@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
-import { getPatientHistory, getPatient, getSlots, bookSlot } from "../services/api";
+import { getPatientHistory, getPatient } from "../services/api";
+import SlotMonitor from "../components/SlotMonitor";
 
 function PatientDashboard() {
   const [history, setHistory] = useState([]);
@@ -8,144 +9,141 @@ function PatientDashboard() {
   const location = useLocation();
   const prn = location.state?.prn;
 
+  const fetchHistory = useCallback(async () => {
+    try {
+      const data = await getPatientHistory(prn);
+      setHistory(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [prn]);
+
+  const fetchPatientData = useCallback(async () => {
+    try {
+      const data = await getPatient(prn);
+      setPatientData(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [prn]);
+
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const data = await getPatientHistory(prn);
-        setHistory(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    const fetchPatientData = async () => {
-      try {
-        const data = await getPatient(prn);
-        setPatientData(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     if (prn) {
       fetchHistory();
       fetchPatientData();
     }
-  }, [prn]);
+  }, [prn, fetchHistory, fetchPatientData]);
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Patient Dashboard</h2>
+      <h2 style={{ marginBottom: "20px", color: "#1e293b" }}>Patient Dashboard</h2>
+      
       {patientData && (
-        <div style={{ marginBottom: "20px", padding: "15px", backgroundColor: "#e0f7fa", borderRadius: "8px" }}>
-          <p><strong>Name:</strong> {patientData.name}</p>
-          <p><strong>PRN:</strong> {patientData.prn}</p>
-          <p><strong>Assigned Doctor:</strong> {patientData.assigned_doctor || "Not assigned"}</p>
-          <p><strong>Assigned Room:</strong> {patientData.assigned_room || "Not assigned"}</p>
+        <div style={{ 
+          marginBottom: "30px", 
+          padding: "20px", 
+          background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)", 
+          borderRadius: "16px",
+          border: "1px solid #bae6fd",
+          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)"
+        }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
+            <div>
+              <label style={{ fontSize: "0.8rem", color: "#64748b", textTransform: "uppercase", fontWeight: "700" }}>Patient Name</label>
+              <p style={{ margin: 0, fontSize: "1.1rem", fontWeight: "600", color: "#0f172a" }}>{patientData.name}</p>
+            </div>
+            <div>
+              <label style={{ fontSize: "0.8rem", color: "#64748b", textTransform: "uppercase", fontWeight: "700" }}>PRN Number</label>
+              <p style={{ margin: 0, fontSize: "1.1rem", fontWeight: "600", color: "#0f172a" }}>{patientData.prn}</p>
+            </div>
+            <div>
+              <label style={{ fontSize: "0.8rem", color: "#64748b", textTransform: "uppercase", fontWeight: "700" }}>Assigned Doctor</label>
+              <p style={{ margin: 0, fontSize: "1.1rem", fontWeight: "600", color: "#0369a1" }}>{patientData.assigned_doctor || "Not assigned"}</p>
+            </div>
+            <div>
+              <label style={{ fontSize: "0.8rem", color: "#64748b", textTransform: "uppercase", fontWeight: "700" }}>Location</label>
+              <p style={{ margin: 0, fontSize: "1.1rem", fontWeight: "600", color: "#0369a1" }}>{patientData.assigned_room ? `Room ${patientData.assigned_room}` : "Waiting Lab/OPD"}</p>
+            </div>
+          </div>
         </div>
       )}
 
-      <h3>Your Medical History & Medications</h3>
-      {history.length > 0 ? (
-        history.map((record, index) => (
-          <div key={index} style={{ border: "1px solid #ccc", margin: "10px 0", padding: "10px", borderRadius: "8px" }}>
-            <p><strong>Date/Visit ID:</strong> {record._id}</p>
-            <p><strong>Diagnosis:</strong> {record.diagnosis}</p>
-            <p><strong>Advice:</strong> {record.advice}</p>
-            <h4>Medications:</h4>
-            <ul>
-              {record.medicines && record.medicines.map((m, i) => (
-                <li key={i}>{m.name} - {m.dose}</li>
-              ))}
-            </ul>
-          </div>
-        ))
-      ) : (
-        <p>No past medical history or medications found.</p>
-      )}
+      <section style={{ marginBottom: "40px" }}>
+        <h3 style={{ marginBottom: "20px", color: "#1e293b", display: "flex", alignItems: "center", gap: "10px" }}>
+          <span style={{ fontSize: "1.5rem" }}>📅</span> Book a Consultation Slot
+        </h3>
+        <div style={{ 
+          padding: "24px", 
+          border: "1px solid #e2e8f0", 
+          borderRadius: "16px", 
+          backgroundColor: "white",
+          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+        }}>
+          <p style={{ color: "#64748b", marginBottom: "20px" }}>Select a doctor and date to view available appointments. You can book one slot per day.</p>
+          {/* Integrated shared SlotMonitor with booking mode enabled via prn prop */}
+          <SlotMonitor prn={prn} />
+        </div>
+      </section>
 
-      <hr style={{ margin: "30px 0" }} />
-
-      <h3>Book a Consultation Slot</h3>
-      <div style={{ padding: "15px", border: "1px solid #ccc", borderRadius: "8px", backgroundColor: "#f9f9f9" }}>
-        <p>Select an available slot to book your appointment for today.</p>
-        <AvailableSlots prn={prn} />
-      </div>
-    </div>
-  );
-}
-
-function AvailableSlots({ prn }) {
-  const [slots, setSlots] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchSlots = useCallback(async () => {
-    try {
-      const data = await getSlots();
-      setSlots(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchSlots();
-  }, [fetchSlots]);
-
-  const handleBook = async (slotId) => {
-    try {
-      await bookSlot(slotId, prn);
-      alert("Slot booked successfully!");
-      fetchSlots();
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  if (loading) return <p>Loading slots...</p>;
-
-  // Group slots by doctor
-  const groupedSlots = slots.reduce((acc, slot) => {
-    if (!acc[slot.doctor_username]) acc[slot.doctor_username] = [];
-    acc[slot.doctor_username].push(slot);
-    return acc;
-  }, {});
-
-  return (
-    <div>
-      {Object.keys(groupedSlots).length > 0 ? (
-        Object.keys(groupedSlots).map(doctor => (
-          <div key={doctor} style={{ marginBottom: "20px" }}>
-            <h4>Dr. {doctor}</h4>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "10px" }}>
-              {groupedSlots[doctor].map(s => (
-                <button
-                  key={s._id}
-                  onClick={() => handleBook(s._id)}
-                  disabled={s.is_booked}
-                  style={{
-                    padding: "10px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    backgroundColor: s.is_booked ? "#eee" : "#fff",
-                    cursor: s.is_booked ? "not-allowed" : "pointer",
-                    textAlign: "center"
-                  }}
-                >
-                  <div>{s.time}</div>
-                  <div style={{ fontSize: "0.8em", color: s.is_booked ? "#999" : "#2e7d32" }}>
-                    {s.is_booked ? (s.patient_prn === prn ? "Your Booking" : "Booked") : "Available"}
+      <section>
+        <h3 style={{ marginBottom: "20px", color: "#1e293b", display: "flex", alignItems: "center", gap: "10px" }}>
+          <span style={{ fontSize: "1.5rem" }}>📜</span> Medical History & Medications
+        </h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {history.length > 0 ? (
+            history.map((record, index) => (
+              <div key={index} style={{ 
+                padding: "20px", 
+                border: "1px solid #e2e8f0", 
+                borderRadius: "12px", 
+                backgroundColor: "#fff",
+                boxShadow: "var(--shadow-sm)"
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px", borderBottom: "1px solid #f1f5f9", paddingBottom: "10px" }}>
+                  <span style={{ fontWeight: "700", color: "#334155" }}>Visit Date: {record.consultationDate || "Recent"}</span>
+                  <span style={{ fontSize: "0.85rem", color: "#64748b" }}>ID: {record._id.substring(0, 8)}...</span>
+                </div>
+                
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "15px" }}>
+                  <div>
+                    <h5 style={{ margin: "0 0 5px 0", color: "#64748b", textTransform: "uppercase", fontSize: "0.75rem" }}>Diagnosis</h5>
+                    <p style={{ margin: 0, fontWeight: "500" }}>{record.diagnosis}</p>
                   </div>
-                </button>
-              ))}
+                  <div>
+                    <h5 style={{ margin: "0 0 5px 0", color: "#64748b", textTransform: "uppercase", fontSize: "0.75rem" }}>Doctor's Advice</h5>
+                    <p style={{ margin: 0, fontWeight: "500" }}>{record.advice}</p>
+                  </div>
+                </div>
+
+                {record.medicines && record.medicines.length > 0 && (
+                  <div>
+                    <h5 style={{ margin: "0 0 10px 0", color: "#64748b", textTransform: "uppercase", fontSize: "0.75rem" }}>Prescribed Medications</h5>
+                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                      {record.medicines.map((m, i) => (
+                        <span key={i} style={{ 
+                          padding: "6px 12px", 
+                          backgroundColor: "#f1f5f9", 
+                          borderRadius: "20px", 
+                          fontSize: "0.85rem", 
+                          fontWeight: "600",
+                          color: "#475569",
+                          border: "1px solid #e2e8f0"
+                        }}>
+                          {m.name} ({m.dose})
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div style={{ textAlign: "center", padding: "40px", backgroundColor: "#f8fafc", borderRadius: "12px", border: "1px dashed #cbd5e1" }}>
+              <p style={{ color: "#94a3b8" }}>No past medical history or medications found.</p>
             </div>
-          </div>
-        ))
-      ) : (
-        <p>No slots available for today yet. Please check back later.</p>
-      )}
+          )}
+        </div>
+      </section>
     </div>
   );
 }

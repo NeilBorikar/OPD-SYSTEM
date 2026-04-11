@@ -195,13 +195,29 @@ export const setDoctorSession = async (data) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || "Failed to set session");
+  }
   return response.json();
 };
 
-export const getSlots = async (date = null) => {
+export const getSlots = async (date = null, doctorUsername = null) => {
   let url = `${API_BASE}/slots/`;
-  if (date) url += `?date=${date}`;
+  const params = new URLSearchParams();
+  if (date) params.append("date", date);
+  if (doctorUsername) params.append("doctor_username", doctorUsername);
+  
+  if (params.toString()) {
+    url += `?${params.toString()}`;
+  }
   const response = await fetch(url);
+  return response.json();
+};
+
+export const getDoctors = async () => {
+  const response = await fetch(`${API_BASE}/slots/doctors`);
+  if (!response.ok) throw new Error("Failed to fetch doctors");
   return response.json();
 };
 

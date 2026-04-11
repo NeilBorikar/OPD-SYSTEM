@@ -7,8 +7,23 @@ from bson import ObjectId
 
 router = APIRouter()
 
+@router.get("/doctors")
+async def list_doctors():
+    doctors = await doctors_collection.find({}, {"username": 1, "full_name": 1}).to_list(100)
+    for d in doctors:
+        d["_id"] = str(d["_id"])
+    return doctors
+
 @router.post("/set-session")
 async def set_doctor_session(request: DoctorScheduleRequest):
+    now = datetime.now()
+    today_str = now.strftime("%Y-%m-%d")
+    target_date = request.date if request.date else today_str
+
+    # Constraint: No past dates
+    if target_date < today_str:
+        raise HTTPException(status_code=400, detail="Cannot set session for a past date.")
+
     # Verify doctor exists
     doctor = await doctors_collection.find_one({"username": request.doctor_username})
     if not doctor:
@@ -24,12 +39,13 @@ async def set_doctor_session(request: DoctorScheduleRequest):
     if end_time <= start_time:
         raise HTTPException(status_code=400, detail="End time must be after start time")
 
-    today = datetime.now().strftime("%Y-%m-%d")
+    # Constraint: No past times for today
+    if target_date == today_str:
+        if start_time.time() < now.time():
+            raise HTTPException(status_code=400, detail="Start time cannot be in the past for today's session.")
 
-    # Clear existing slots for this doctor today if they want to reset? 
-    # For now, let's just add. Or should we prevent duplicates?
-    # Usually, a doctor sets session once.
-    await slots_collection.delete_many({"doctor_username": request.doctor_username, "date": today})
+    # Clear existing slots for this doctor on the target date
+    await slots_collection.delete_many({"doctor_username": request.doctor_username, "date": target_date})
 
     slots = []
     current_time = start_time
@@ -45,21 +61,25 @@ async def set_doctor_session(request: DoctorScheduleRequest):
             "is_booked": False,
             "is_completed": False,
             "patient_prn": None,
-            "date": today
+            "date": target_date
         })
         current_time = next_time
 
     if slots:
         await slots_collection.insert_many(slots)
     
-    return {"message": f"Generated {len(slots)} slots for {request.doctor_username} on {today}"}
+    return {"message": f"Generated {len(slots)} slots for {request.doctor_username} on {target_date}"}
 
 @router.get("/", response_model=List[dict])
-async def get_all_slots(date: str = None):
+async def get_all_slots(date: str = None, doctor_username: str = None):
     if not date:
         date = datetime.now().strftime("%Y-%m-%d")
     
-    slots = await slots_collection.find({"date": date}).to_list(1000)
+    query = {"date": date}
+    if doctor_username:
+        query["doctor_username"] = doctor_username
+        
+    slots = await slots_collection.find(query).to_list(1000)
     # Convert ObjectId to str for response
     for s in slots:
         s["_id"] = str(s["_id"])
