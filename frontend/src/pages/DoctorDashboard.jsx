@@ -199,8 +199,19 @@ function DoctorDashboard() {
               <td>
                 <ul style={{ paddingLeft: "20px", margin: 0 }}>
                   {(p.tasks_for_nurse || []).map((t, i) => (
-                    <li key={i}>
-                      {t.task} <strong>(Nurse: {t.nurse_username})</strong>
+                    <li key={i} style={{ color: t.status === "completed" ? "#059669" : "#475569", marginBottom: "4px" }}>
+                      {t.task} 
+                      <span style={{ 
+                        marginLeft: "8px", 
+                        fontSize: "0.75rem", 
+                        padding: "2px 6px", 
+                        borderRadius: "4px", 
+                        backgroundColor: t.status === "completed" ? "#dcfce7" : "#f1f5f9",
+                        color: t.status === "completed" ? "#166534" : "#64748b",
+                        fontWeight: "600"
+                      }}>
+                        {t.status === "completed" ? "Done" : `Pending: ${t.nurse_username}`}
+                      </span>
                     </li>
                   ))}
                 </ul>

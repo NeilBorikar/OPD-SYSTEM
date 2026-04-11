@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import patients
-from app.routes import consultations
+from app.routes import patients, consultations, staff, slots, tasks
 from app.routes import auth
-from app.routes import slots
 app = FastAPI()
 
 app.add_middleware(
@@ -19,6 +17,7 @@ app.include_router(patients.router)
 app.include_router(consultations.router)
 app.include_router(auth.router)
 app.include_router(slots.router, prefix="/slots", tags=["slots"])
+app.include_router(tasks.router, prefix="/tasks", tags=["tasks"])
 
 @app.get("/")
 def home():

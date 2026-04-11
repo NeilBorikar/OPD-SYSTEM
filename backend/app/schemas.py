@@ -133,3 +133,16 @@ class DoctorScheduleRequest(BaseModel):
     doctor_username: str
     start_time: str  # Format: "HH:mm"
     end_time: str    # Format: "HH:mm"
+
+class TaskSchema(BaseModel):
+    id: Optional[PyObjectId] = None
+    patient_prn: str
+    patient_name: str
+    nurse_username: str
+    task_content: str
+    status: str = "pending" # pending, completed
+    created_at: str # ISO format
+    completed_at: Optional[str] = None
+
+    class Config:
+        arbitrary_types_allowed = True

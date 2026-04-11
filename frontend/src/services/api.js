@@ -104,6 +104,32 @@ export const loginNurse = async (data) => {
   return response.json();
 };
 
+export const completeTask = async (taskId) => {
+  const response = await fetch(`${API_BASE}/tasks/${taskId}/complete`, {
+    method: "PUT"
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || "Failed to complete task");
+  }
+  return response.json();
+};
+
+export const getNurseTasks = async (username, status = null, date = null) => {
+  let url = `${API_BASE}/tasks/nurse/${username}`;
+  const params = new URLSearchParams();
+  if (status) params.append("status", status);
+  if (date) params.append("date", date);
+  
+  if (params.toString()) {
+    url += `?${params.toString()}`;
+  }
+  
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Failed to fetch nurse tasks");
+  return response.json();
+};
+
 export const loginReceptionist = async (data) => {
   const response = await fetch(`${API_BASE}/login-receptionist`, {
     method: "POST",

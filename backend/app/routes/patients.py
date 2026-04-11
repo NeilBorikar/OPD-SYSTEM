@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from app.database import patients_collection
-from app.schemas import PatientRegisterSchema, PatientLoginSchema, TaskAssignSchema
+from app.database import patients_collection, tasks_collection
+from app.schemas import PatientRegisterSchema, PatientLoginSchema, TaskAssignSchema, TaskSchema
+from datetime import datetime
 from typing import List
 
 router = APIRouter()
@@ -81,9 +82,26 @@ async def assign_task(prn: str, data: TaskAssignSchema):
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
         
-    task_entry = {"task": data.task, "nurse_username": data.nurse_username}
+    # New logic: Insert into tasks_collection for the nurse task management system
+    task_doc = {
+        "patient_prn": prn_str,
+        "patient_name": patient.get("name", "Unknown"),
+        "nurse_username": data.nurse_username,
+        "task_content": data.task,
+        "status": "pending",
+        "created_at": datetime.now().isoformat()
+    }
+    task_result = await tasks_collection.insert_one(task_doc)
+    
+    # Keep legacy list for now but with task_id
+    task_entry = {
+        "task_id": str(task_result.inserted_id),
+        "task": data.task, 
+        "nurse_username": data.nurse_username,
+        "status": "pending"
+    }
     await patients_collection.update_one(
         {"prn": prn_str},
         {"$push": {"tasks_for_nurse": task_entry}}
     )
-    return {"message": "Task assigned successfully"}
+    return {"message": "Task assigned successfully", "task_id": str(task_result.inserted_id)}

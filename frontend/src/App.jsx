@@ -16,6 +16,7 @@ import DoctorDashboard from "./pages/DoctorDashboard";
 import NurseDashboard from "./pages/NurseDashboard";
 import ReceptionistDashboard from "./pages/ReceptionistDashboard";
 import PatientDashboard from "./pages/PatientDashboard";
+import PastTasks from "./pages/PastTasks";
 
 function App() {
   return (
@@ -42,7 +43,8 @@ function App() {
         <Route path="/history" element={<History />} />
 
         <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
-        <Route path="/nurse-dashboard" element={<NurseDashboard />} />
+        <Route path="/nurse" element={<NurseDashboard />} />
+        <Route path="/nurse/past-tasks" element={<PastTasks />} />
         <Route path="/reception-dashboard" element={<ReceptionistDashboard />} />
         <Route path="/patient-dashboard" element={<PatientDashboard />} />
 

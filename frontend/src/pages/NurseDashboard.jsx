@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { getPatientsOrdered } from "../services/api";
-import { useLocation } from "react-router-dom";
+import { getPatientsOrdered, getNurseTasks, completeTask, getSlots } from "../services/api";
+import { useLocation, Link } from "react-router-dom";
 
 function NurseDashboard() {
   const [patients, setPatients] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [searchText, setSearchText] = useState("");
   const location = useLocation();
   const username = location.state?.username || localStorage.getItem("nurse_username") || "Unknown";
@@ -17,9 +18,30 @@ function NurseDashboard() {
     }
   }, []);
 
+  const fetchRecentTasks = useCallback(async () => {
+    try {
+      const data = await getNurseTasks(username, "pending");
+      setTasks(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [username]);
+
   useEffect(() => {
     fetchPatients();
-  }, [fetchPatients]);
+    fetchRecentTasks();
+  }, [fetchPatients, fetchRecentTasks]);
+
+  const handleCompleteTask = async (taskId) => {
+    try {
+      await completeTask(taskId);
+      alert("Task marked as completed!");
+      fetchRecentTasks();
+      fetchPatients(); // Refresh patient list to update task statuses if shown
+    } catch (err) {
+      alert("Failed to complete task: " + err.message);
+    }
+  };
 
   const filteredPatients = patients.filter((p) => {
     const query = searchText.trim().toLowerCase();
@@ -43,6 +65,9 @@ function NurseDashboard() {
         <div>
           <h2>Nurse Dashboard</h2>
           <p>Welcome back, {username}. Track assignments and patient priorities in real time.</p>
+          <Link to="/nurse/past-tasks" className="past-tasks-btn">
+            View Past Tasks History
+          </Link>
         </div>
         <div className="nurse-metrics">
           <div className="metric-card">
@@ -50,9 +75,53 @@ function NurseDashboard() {
             <strong className="metric-value">{totalPatients}</strong>
           </div>
           <div className="metric-card">
-            <span className="metric-label">Your Tasks</span>
-            <strong className="metric-value">{yourTaskCount}</strong>
+            <span className="metric-label">Your Pending Tasks</span>
+            <strong className="metric-value">{tasks.length}</strong>
           </div>
+        </div>
+      </section>
+
+      <section className="recent-tasks-section table-card" style={{ marginBottom: "30px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
+          <h3 style={{ margin: 0 }}>Recent Tasks (Pending)</h3>
+          <span className="task-count-badge">{tasks.length} Pending</span>
+        </div>
+        <div className="nurse-table-wrap">
+          <table className="nurse-table">
+            <thead>
+              <tr>
+                <th>Time Assigned</th>
+                <th>Patient</th>
+                <th>Task Description</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.length > 0 ? tasks.map((task) => (
+                <tr key={task._id}>
+                  <td>{new Date(task.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                  <td>
+                    <strong>{task.patient_name}</strong>
+                    <div style={{ fontSize: "0.8em", color: "#666" }}>PRN: {task.patient_prn}</div>
+                  </td>
+                  <td style={{ color: "#334155" }}>{task.task_content}</td>
+                  <td>
+                    <button 
+                      className="complete-task-btn"
+                      onClick={() => handleCompleteTask(task._id)}
+                      title="Mark as Completed"
+                    >
+                      ✓ Mark Complete
+                    </button>
+                  </td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="4" className="no-results">No pending tasks found. Good job!</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -90,7 +159,9 @@ function NurseDashboard() {
                     <td>{p.prn}</td>
                     <td>{p.name}</td>
                     <td>
-                      <span className="severity-pill">{p.severityIndex || "N/A"}</span>
+                      <span className={`severity-pill severity-${(p.severityIndex || "normal").toLowerCase()}`}>
+                        {p.severityIndex || "Normal"}
+                      </span>
                     </td>
                     <td>{p.assigned_room || "N/A"}</td>
                     <td>
@@ -143,9 +214,7 @@ function SlotMonitor() {
 
   const fetchSlots = useCallback(async () => {
     try {
-      const API_URL = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://corepulse-ysxr.onrender.com";
-      const response = await fetch(`${API_URL}/slots/`);
-      const data = await response.json();
+      const data = await getSlots();
       setSlots(data);
     } catch (err) {
       console.error(err);
