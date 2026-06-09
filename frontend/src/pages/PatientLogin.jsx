@@ -86,7 +86,7 @@ function PatientLogin() {
                   <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
               </div>
-              <h2 style={styles.formTitle}>Patient Login</h2>
+              <h2 style={styles.formTitle} className="patient-login-heading">Patient Login</h2>
               <p style={styles.formSubtitle}>Enter your credentials to continue</p>
             </div>
 
@@ -231,6 +231,9 @@ function PatientLogin() {
         }
         #patient-login-btn:active:not(:disabled) {
           transform: translateY(0) !important;
+        }
+        .patient-login-heading {
+          color: white !important;
         }
       `}</style>
     </div>
