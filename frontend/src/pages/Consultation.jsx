@@ -174,11 +174,7 @@ const handleDownloadPDF = async () => {
             </p>
             <p><b>Department :</b> Neurosurgery</p>
             <p><b>Consultation Date :</b> <input type="date"/></p>
-            <p><b>Consultant :</b> Dr. Rakesh Kumar Das</p>
-            <p>MBBS,MS,M.Ch.(Neurosurgery)</p>
-            <p>Reg No-102761(WBMC)</p>
-            <p>Consultant Brain & Spine Surgeon</p>
-            {/* <p>Subham Hospital & Diagnotic Centre Pvt Ltd</p> */}
+            {/* Consultant section removed */}
           </div>              
         </div>
         {/* VITALS */}

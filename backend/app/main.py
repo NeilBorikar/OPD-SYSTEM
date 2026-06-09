@@ -21,3 +21,4 @@ app.include_router(tasks.router, prefix="/tasks", tags=["tasks"])
 @app.get("/")
 def home():
     return {"message": "Clinic Backend Running"}
+    
