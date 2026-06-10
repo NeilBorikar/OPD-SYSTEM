@@ -32,8 +32,8 @@ const ModernNavbar = () => {
     navigate("/login");
   };
 
-  // Hide navbar entirely on dashboard pages that have their own nav
-  const hiddenRoutes = ["/patient-dashboard"];
+  // Hide navbar entirely on dashboard pages that have their own nav, and login page
+  const hiddenRoutes = ["/patient-dashboard", "/login", "/"];
   if (hiddenRoutes.includes(location.pathname)) return null;
 
   return (

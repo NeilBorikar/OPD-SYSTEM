@@ -15,7 +15,7 @@
    ========================================================= */
 .login-hero-banner {
   background: linear-gradient(135deg, #0a0f1e 0%, #0f172a 50%, #0c1a3a 100%);
-  padding: 5rem 2rem 7rem; /* Extra padding at bottom so cards can overlap if we want */
+  padding: 2.5rem 2rem 5rem; /* Less top padding so it acts like a header */
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -69,20 +69,18 @@
 }
 
 .hero-title {
-  font-size: 4rem !important;
+  font-size: 3.5rem !important;
   font-weight: 900 !important;
   margin: 0 0 0.5rem !important;
-  background: linear-gradient(135deg, #ffffff 0%, #7dd3fc 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-  color: transparent !important;
-  letter-spacing: -1.5px !important;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  letter-spacing: -1px !important;
 }
 
 .hero-subtitle {
   color: #e2e8f0 !important;
-  font-size: 1.4rem !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
+  font-size: 1.25rem !important;
   font-weight: 400 !important;
   margin: 0 0 1.5rem !important;
 }
