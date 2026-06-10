@@ -37,7 +37,7 @@ function PatientLogin() {
   };
 
   return (
-    <div style={styles.page}>
+    <div id="patient-login-container" style={styles.page}>
       {/* Animated background blobs */}
       <div style={styles.blob1} />
       <div style={styles.blob2} />
@@ -233,7 +233,8 @@ function PatientLogin() {
         #patient-login-btn:active:not(:disabled) {
           transform: translateY(0) !important;
         }
-        .patient-login-heading, .white-heading {
+        #patient-login-container h1,
+        #patient-login-container h2 {
           color: white !important;
           background: none !important;
           -webkit-background-clip: unset !important;
@@ -413,6 +414,7 @@ const styles = {
     fontSize: "1.5rem",
     fontWeight: 700,
     color: "#e0e0e0",
+    text: "#e0e0e0",
   },
   formSubtitle: {
     margin: 0,
