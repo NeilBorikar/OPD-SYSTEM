@@ -112,8 +112,8 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Beautiful typography - Exclude navbar and specific components */
-h1:not(.navbar-brand h1):not(.brand-text h1), 
-h2:not(.navbar-brand h2):not(.brand-text h2), 
+h1:not(.navbar-brand h1):not(.brand-text h1):not(.hero-title), 
+h2:not(.navbar-brand h2):not(.brand-text h2):not(.hero-subtitle), 
 h3:not(.navbar-brand h3):not(.brand-text h3), 
 h4:not(.navbar-brand h4):not(.brand-text h4), 
 h5:not(.navbar-brand h5):not(.brand-text h5), 

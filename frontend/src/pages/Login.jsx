@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { loginUnified, loginPatient } from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/login.css";
 import "../styles/global.css";
+import "../styles/login.css";
 
 function Login() {
   // Staff Form State
@@ -94,8 +94,32 @@ function Login() {
             <span className="pulse-dot"></span>
             <span>SYSTEM ACCESS</span>
           </div>
-          <h1 className="hero-title">COREPULSE</h1>
-          <h2 className="hero-subtitle">Smart Hospital Management Ecosystem</h2>
+          <h1 
+            className="hero-title"
+            style={{
+              color: "white",
+              WebkitTextFillColor: "white",
+              background: "none",
+              WebkitBackgroundClip: "unset",
+              backgroundClip: "unset",
+              textShadow: "none"
+            }}
+          >
+            COREPULSE
+          </h1>
+          <h2 
+            className="hero-subtitle"
+            style={{
+              color: "#e2e8f0",
+              WebkitTextFillColor: "#e2e8f0",
+              background: "none",
+              WebkitBackgroundClip: "unset",
+              backgroundClip: "unset",
+              textShadow: "none"
+            }}
+          >
+            Smart Hospital Management Ecosystem
+          </h2>
           <div className="hero-tags">
             <span className="tag">Connecting Doctors</span>
             <span className="tag-dot">•</span>

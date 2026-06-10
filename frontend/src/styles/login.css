@@ -74,12 +74,20 @@
   margin: 0 0 0.5rem !important;
   color: white !important;
   -webkit-text-fill-color: white !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  text-shadow: none !important;
   letter-spacing: -1px !important;
 }
 
 .hero-subtitle {
   color: #e2e8f0 !important;
   -webkit-text-fill-color: #e2e8f0 !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  text-shadow: none !important;
   font-size: 1.25rem !important;
   font-weight: 400 !important;
   margin: 0 0 1.5rem !important;
