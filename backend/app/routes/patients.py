@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from app.database import patients_collection, tasks_collection
 from app.schemas import PatientRegisterSchema, PatientLoginSchema, TaskAssignSchema, TaskSchema
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+IST = timezone(timedelta(hours=5, minutes=30))
 from typing import List
 
 router = APIRouter()
@@ -89,7 +90,7 @@ async def assign_task(prn: str, data: TaskAssignSchema):
         "nurse_username": data.nurse_username,
         "task_content": data.task,
         "status": "pending",
-        "created_at": datetime.now().isoformat()
+        "created_at": datetime.now(IST).isoformat()
     }
     task_result = await tasks_collection.insert_one(task_doc)
     

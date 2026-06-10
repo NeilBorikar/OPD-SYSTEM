@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.database import slots_collection, doctors_collection, patients_collection
 from app.schemas import SlotSchema, DoctorScheduleRequest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+IST = timezone(timedelta(hours=5, minutes=30))
 from typing import List
 from bson import ObjectId
 
@@ -24,7 +25,7 @@ async def set_doctor_session(request: DoctorScheduleRequest):
     if end_time <= start_time:
         raise HTTPException(status_code=400, detail="End time must be after start time")
 
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now(IST).strftime("%Y-%m-%d")
 
     # Clear existing slots for this doctor today if they want to reset? 
     # For now, let's just add. Or should we prevent duplicates?
@@ -56,7 +57,7 @@ async def set_doctor_session(request: DoctorScheduleRequest):
 @router.get("/", response_model=List[dict])
 async def get_all_slots(date: str = None):
     if not date:
-        date = datetime.now().strftime("%Y-%m-%d")
+        date = datetime.now(IST).strftime("%Y-%m-%d")
     
     slots = await slots_collection.find({"date": date}).to_list(1000)
     # Convert ObjectId to str for response
@@ -72,7 +73,7 @@ async def book_slot(slot_id: str, patient_prn: str):
         raise HTTPException(status_code=404, detail="Patient not found")
 
     # Check if patient already booked a slot today
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now(IST).strftime("%Y-%m-%d")
     existing_booking = await slots_collection.find_one({
         "patient_prn": patient_prn,
         "date": today,

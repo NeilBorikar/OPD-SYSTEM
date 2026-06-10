@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Query
 from app.database import tasks_collection, patients_collection
 from app.schemas import TaskSchema
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+IST = timezone(timedelta(hours=5, minutes=30))
 from bson import ObjectId
 from typing import List, Optional
 
@@ -11,7 +12,7 @@ router = APIRouter()
 async def assign_task(data: TaskSchema):
     task_doc = data.dict(exclude={"id"})
     task_doc["status"] = "pending"
-    task_doc["created_at"] = datetime.now().isoformat()
+    task_doc["created_at"] = datetime.now(IST).isoformat()
     result = await tasks_collection.insert_one(task_doc)
     
     # Also update the patient document for legacy compatibility
@@ -34,7 +35,7 @@ async def complete_task(task_id: str):
         
     result = await tasks_collection.update_one(
         {"_id": ObjectId(task_id)},
-        {"$set": {"status": "completed", "completed_at": datetime.now().isoformat()}}
+        {"$set": {"status": "completed", "completed_at": datetime.now(IST).isoformat()}}
     )
     
     if result.modified_count == 0:
