@@ -23,6 +23,8 @@ function PatientLogin() {
     setLoading(true);
     try {
       await loginPatient(form);
+      localStorage.setItem("user_role", "patient");
+      localStorage.setItem("patient_prn", form.prn);
       navigate("/patient-dashboard", { state: { prn: form.prn } });
     } catch (err) {
       console.error(err);

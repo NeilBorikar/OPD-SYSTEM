@@ -21,6 +21,7 @@ function ReceptionistLogin() {
     try {
       await loginReceptionist(form);
       alert("Login Successful");
+      localStorage.setItem("user_role", "receptionist");
       navigate("/reception-dashboard");
     } catch (err) {
       console.error(err);

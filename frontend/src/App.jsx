@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ModernNavbar from "./components/ModernNavbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -24,29 +25,68 @@ function App() {
       <ModernNavbar />
       <Routes>
 
-        {/* default route */}
+        {/* Default route */}
         <Route path="/" element={<Navigate to="/login" />} />
 
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/reset" element={<ResetPassword />} />
-
         <Route path="/nurse-login" element={<NurseLogin />} />
         <Route path="/receptionist-login" element={<ReceptionistLogin />} />
         <Route path="/patient-login" element={<PatientLogin />} />
-        <Route path="/nurse-login" element={<NurseLogin />} />
-        <Route path="/receptionist-login" element={<ReceptionistLogin />} />
 
-        {/* protected routes (temporarily open) */}
-        <Route path="/home" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/consultation" element={<Consultation />} />
-        <Route path="/history" element={<History />} />
+        {/* Doctor-only routes */}
+        <Route path="/doctor-dashboard" element={
+          <ProtectedRoute allowedRoles={["doctor"]}>
+            <DoctorDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/home" element={
+          <ProtectedRoute allowedRoles={["doctor"]}>
+            <Home />
+          </ProtectedRoute>
+        } />
+        <Route path="/register" element={
+          <ProtectedRoute allowedRoles={["doctor"]}>
+            <Register />
+          </ProtectedRoute>
+        } />
+        <Route path="/consultation" element={
+          <ProtectedRoute allowedRoles={["doctor"]}>
+            <Consultation />
+          </ProtectedRoute>
+        } />
+        <Route path="/history" element={
+          <ProtectedRoute allowedRoles={["doctor"]}>
+            <History />
+          </ProtectedRoute>
+        } />
 
-        <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
-        <Route path="/nurse" element={<NurseDashboard />} />
-        <Route path="/nurse/past-tasks" element={<PastTasks />} />
-        <Route path="/reception-dashboard" element={<ReceptionistDashboard />} />
-        <Route path="/patient-dashboard" element={<PatientDashboard />} />
+        {/* Nurse-only routes */}
+        <Route path="/nurse" element={
+          <ProtectedRoute allowedRoles={["nurse"]}>
+            <NurseDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/nurse/past-tasks" element={
+          <ProtectedRoute allowedRoles={["nurse"]}>
+            <PastTasks />
+          </ProtectedRoute>
+        } />
+
+        {/* Receptionist-only routes */}
+        <Route path="/reception-dashboard" element={
+          <ProtectedRoute allowedRoles={["receptionist"]}>
+            <ReceptionistDashboard />
+          </ProtectedRoute>
+        } />
+
+        {/* Patient-only routes */}
+        <Route path="/patient-dashboard" element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <PatientDashboard />
+          </ProtectedRoute>
+        } />
 
       </Routes>
     </BrowserRouter>

@@ -1,20 +1,40 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../styles/navbar.css";
 import "../styles/global.css";
 
 const ModernNavbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const userRole = localStorage.getItem("user_role");
+  const isDoctor = userRole === "doctor";
+  const isLoggedIn = !!userRole;
 
   const isActiveRoute = (path) => location.pathname === path;
 
-  const navLinks = [
+  // Only doctors see these nav links
+  const doctorNavLinks = [
     { to: "/home", label: "Patient Lookup" },
     { to: "/register", label: "Register Patient" },
     { to: "/consultation", label: "Consultation" },
     { to: "/history", label: "History" },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("user_role");
+    localStorage.removeItem("doctor_username");
+    localStorage.removeItem("nurse_username");
+    localStorage.removeItem("receptionist_username");
+    localStorage.removeItem("patient_prn");
+    setIsMobileMenuOpen(false);
+    navigate("/login");
+  };
+
+  // Hide navbar entirely on dashboard pages that have their own nav
+  const hiddenRoutes = ["/patient-dashboard"];
+  if (hiddenRoutes.includes(location.pathname)) return null;
 
   return (
     <nav className="navbar">
@@ -27,7 +47,8 @@ const ModernNavbar = () => {
         </div>
 
         <div className="nav-links-desktop">
-          {navLinks.map((link) => (
+          {/* Doctor nav links — only visible when logged in as doctor */}
+          {isDoctor && doctorNavLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
@@ -36,9 +57,21 @@ const ModernNavbar = () => {
               <span className="nav-label">{link.label}</span>
             </Link>
           ))}
-          <Link to="/login" className="nav-link login-btn">
-            <span className="nav-label">Login</span>
-          </Link>
+
+          {/* Logout (when logged in) or Login (when not logged in) */}
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="nav-link login-btn"
+              style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)", border: "none", cursor: "pointer" }}
+            >
+              <span className="nav-label">Logout</span>
+            </button>
+          ) : (
+            <Link to="/login" className="nav-link login-btn">
+              <span className="nav-label">Login</span>
+            </Link>
+          )}
         </div>
 
         <button
@@ -53,7 +86,7 @@ const ModernNavbar = () => {
 
       {isMobileMenuOpen && (
         <div className="mobile-menu">
-          {navLinks.map((link) => (
+          {isDoctor && doctorNavLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
@@ -63,13 +96,24 @@ const ModernNavbar = () => {
               <span className="nav-label">{link.label}</span>
             </Link>
           ))}
-          <Link
-            to="/login"
-            className="mobile-nav-link login-btn"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <span className="nav-label">Login</span>
-          </Link>
+
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="mobile-nav-link login-btn"
+              style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)", border: "none", cursor: "pointer", width: "calc(100% - 3rem)" }}
+            >
+              <span className="nav-label">Logout</span>
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="mobile-nav-link login-btn"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <span className="nav-label">Login</span>
+            </Link>
+          )}
         </div>
       )}
     </nav>

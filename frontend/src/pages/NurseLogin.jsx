@@ -21,8 +21,9 @@ function NurseLogin() {
     try {
       await loginNurse(form);
       alert("Login Successful");
+      localStorage.setItem("user_role", "nurse");
       localStorage.setItem("nurse_username", form.username);
-      navigate("/nurse-dashboard", { state: { username: form.username } });
+      navigate("/nurse", { state: { username: form.username } });
     } catch (err) {
       console.error(err);
       alert("Invalid credentials");
