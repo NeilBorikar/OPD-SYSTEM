@@ -412,7 +412,7 @@ const styles = {
     margin: "0 0 0.4rem",
     fontSize: "1.5rem",
     fontWeight: 700,
-    color: "white",
+    color: "#e0e0e0",
   },
   formSubtitle: {
     margin: 0,
