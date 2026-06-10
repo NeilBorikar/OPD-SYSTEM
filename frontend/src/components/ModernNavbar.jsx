@@ -41,8 +41,7 @@ const ModernNavbar = () => {
       <div className="navbar-container">
         <div className="navbar-brand">
           <div className="brand-text">
-            <h1>NeuroCare OPD Management</h1>
-            <span className="tagline">Advanced Healthcare Management</span>
+            <h1>CorePulse</h1>
           </div>
         </div>
 
