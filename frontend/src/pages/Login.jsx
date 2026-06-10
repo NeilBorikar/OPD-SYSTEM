@@ -17,6 +17,13 @@ function Login() {
 
   const navigate = useNavigate();
 
+  // Accordion toggle state: 'staff', 'patient', or null (both collapsed)
+  const [expandedCard, setExpandedCard] = useState(null);
+
+  const toggleCard = (card) => {
+    setExpandedCard(prev => prev === card ? null : card);
+  };
+
   // --- STAFF HANDLERS ---
   const handleStaffChange = (e) => {
     setStaffForm({ ...staffForm, [e.target.name]: e.target.value });
@@ -136,8 +143,8 @@ function Login() {
       <div className="login-cards-container">
         
         {/* STAFF LOGIN CARD */}
-        <div className="login-card staff-card">
-          <div className="card-header">
+        <div className={`login-card staff-card ${expandedCard === "staff" ? "expanded" : "collapsed"}`}>
+          <div className="card-header" onClick={() => toggleCard("staff")}>
             <div className="card-icon staff-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
@@ -146,6 +153,11 @@ function Login() {
             </div>
             <h3>Staff Login</h3>
             <p>Access your dashboard</p>
+            <div className="expand-indicator">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
           </div>
 
           <div className="card-body">
@@ -188,8 +200,8 @@ function Login() {
         </div>
 
         {/* PATIENT LOGIN CARD */}
-        <div className="login-card patient-card">
-          <div className="card-header">
+        <div className={`login-card patient-card ${expandedCard === "patient" ? "expanded" : "collapsed"}`}>
+          <div className="card-header" onClick={() => toggleCard("patient")}>
             <div className="card-icon patient-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
@@ -198,6 +210,11 @@ function Login() {
             </div>
             <h3>Patient Login</h3>
             <p>View your records & history</p>
+            <div className="expand-indicator">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
           </div>
 
           <div className="card-body">

@@ -118,6 +118,7 @@
 .login-cards-container {
   display: flex;
   justify-content: center;
+  align-items: flex-start !important; /* Prevents collapsed cards from stretching */
   gap: 2.5rem;
   padding: 0 2rem;
   margin-top: -3.5rem; /* Overlaps the banner slightly for a modern look */
@@ -138,7 +139,7 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   display: flex;
   flex-direction: column;
 }
@@ -153,6 +154,14 @@
   text-align: center;
   background: #f8fafc;
   border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  transition: background-color 0.3s ease, border-bottom-color 0.3s ease;
+}
+
+.card-header:hover {
+  background: #f1f5f9;
 }
 
 .card-icon {
@@ -190,6 +199,61 @@
   font-size: 0.9rem;
 }
 
+/* Collapsed state adjustments */
+.login-card.collapsed .card-header {
+  border-bottom-color: transparent;
+}
+
+.login-card.collapsed .card-body {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden; /* Prevents keyboard focus on hidden inputs */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease,
+              visibility 0.35s ease,
+              padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Expanded state adjustments */
+.login-card.expanded .card-body {
+  max-height: 800px; /* High enough to allow all content to show */
+  opacity: 1;
+  visibility: visible;
+  padding: 2rem;
+  overflow: visible;
+  transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease,
+              visibility 0s ease,
+              padding 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Expand indicator styling */
+.expand-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.75rem;
+  color: #64748b;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+}
+
+.login-card.expanded .expand-indicator {
+  transform: rotate(180deg);
+}
+
+.login-card.staff-card.expanded .expand-indicator {
+  color: #2563eb;
+}
+
+.login-card.patient-card.expanded .expand-indicator {
+  color: #16a34a;
+}
+
 /* =========================================================
    FORM ELEMENTS
    ========================================================= */
@@ -199,6 +263,7 @@
   flex-direction: column;
   gap: 1.25rem;
   flex-grow: 1;
+  transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .form-group {
