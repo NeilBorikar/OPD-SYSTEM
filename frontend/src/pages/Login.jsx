@@ -1,135 +1,220 @@
 import { useState } from "react";
-import { loginUnified } from "../services/api";
+import { loginUnified, loginPatient } from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/login.css";
 import "../styles/global.css";
 
 function Login() {
-  const [form, setForm] = useState({
-    username: "",
-    password: ""
-  });
-  const [isLoading, setIsLoading] = useState(false);
+  // Staff Form State
+  const [staffForm, setStaffForm] = useState({ username: "", password: "" });
+  const [staffLoading, setStaffLoading] = useState(false);
+  const [staffError, setStaffError] = useState("");
+
+  // Patient Form State
+  const [patientForm, setPatientForm] = useState({ prn: "", password: "" });
+  const [patientLoading, setPatientLoading] = useState(false);
+  const [patientError, setPatientError] = useState("");
 
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+  // --- STAFF HANDLERS ---
+  const handleStaffChange = (e) => {
+    setStaffForm({ ...staffForm, [e.target.name]: e.target.value });
+    setStaffError("");
   };
 
-  const handleLogin = async () => {
-    if (!form.username || !form.password) {
-      alert("Please enter both username and password");
+  const handleStaffLogin = async () => {
+    if (!staffForm.username || !staffForm.password) {
+      setStaffError("Please enter both username and password");
       return;
     }
-
-    setIsLoading(true);
+    setStaffLoading(true);
     try {
-      const res = await loginUnified(form);
-      alert("Login Successful");
-
+      const res = await loginUnified(staffForm);
       if (res.role === "doctor") {
         localStorage.setItem("user_role", "doctor");
-        localStorage.setItem("doctor_username", form.username);
+        localStorage.setItem("doctor_username", staffForm.username);
         navigate("/doctor-dashboard");
       } else if (res.role === "nurse") {
         localStorage.setItem("user_role", "nurse");
-        localStorage.setItem("nurse_username", form.username);
-        navigate("/nurse", { state: { username: form.username } });
+        localStorage.setItem("nurse_username", staffForm.username);
+        navigate("/nurse", { state: { username: staffForm.username } });
       } else if (res.role === "receptionist") {
         localStorage.setItem("user_role", "receptionist");
         navigate("/reception-dashboard");
       }
     } catch (err) {
       console.error(err);
-      alert("Invalid credentials / User not found");
+      setStaffError("Invalid credentials / User not found");
     } finally {
-      setIsLoading(false);
+      setStaffLoading(false);
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleLogin();
+  const handleStaffKeyPress = (e) => {
+    if (e.key === 'Enter') handleStaffLogin();
+  };
+
+  // --- PATIENT HANDLERS ---
+  const handlePatientChange = (e) => {
+    setPatientForm({ ...patientForm, [e.target.name]: e.target.value });
+    setPatientError("");
+  };
+
+  const handlePatientLogin = async () => {
+    if (!patientForm.prn || !patientForm.password) {
+      setPatientError("Please enter both PRN and password");
+      return;
     }
+    setPatientLoading(true);
+    try {
+      await loginPatient(patientForm);
+      localStorage.setItem("user_role", "patient");
+      localStorage.setItem("patient_prn", patientForm.prn);
+      navigate("/patient-dashboard", { state: { prn: patientForm.prn } });
+    } catch (err) {
+      console.error(err);
+      setPatientError("Invalid PRN or password");
+    } finally {
+      setPatientLoading(false);
+    }
+  };
+
+  const handlePatientKeyPress = (e) => {
+    if (e.key === 'Enter') handlePatientLogin();
   };
 
   return (
-    <div className="login-page">
-      <div className="login-background">
-        <div className="login-card">
-          <div className="login-header">
-            <div className="login-logo">
-              <span className="logo-icon">🏥</span>
-            </div>
-            <h2>Staff Login</h2>
-            <p className="login-subtitle">Doctor / Nurse / Receptionist</p>
+    <div className="login-wrapper">
+      
+      {/* HERO SECTION */}
+      <div className="login-hero-banner">
+        <div className="hero-content">
+          <div className="hero-brand-pill">
+            <span className="pulse-dot"></span>
+            <span>SYSTEM ACCESS</span>
           </div>
-
-          <div className="login-form">
-            <div className="form-group">
-              <label className="form-label">Username</label>
-              <div className="input-wrapper">
-                <span className="input-icon">👤</span>
-                <input
-                  name="username"
-                  type="text"
-                  placeholder="Enter your username"
-                  onChange={handleChange}
-                  onKeyPress={handleKeyPress}
-                  className="form-input"
-                />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <div className="input-wrapper">
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  onChange={handleChange}
-                  onKeyPress={handleKeyPress}
-                  className="form-input"
-                  style={{ paddingLeft: '1.25rem' }}
-                />
-              </div>
-            </div>
-
-            <button 
-              onClick={handleLogin}
-              disabled={isLoading}
-              className={`login-btn ${isLoading ? 'loading' : ''}`}
-            >
-              {isLoading ? (
-                <span className="loading-spinner">⏳</span>
-              ) : (
-                <span>Login to Dashboard</span>
-              )}
-            </button>
-          </div>
-
-          <div className="login-footer">
-            <Link to="/reset" className="forgot-password-link">
-              Forgot Password?
-            </Link>
-          </div>
-
-          <div className="login-divider">
-            <span>OR</span>
-          </div>
-
-          <div className="alternative-logins">
-            <Link to="/patient-login" className="alt-login-btn">
-              <span className="alt-icon">👥</span>
-              <span>Patient Login</span>
-            </Link>
+          <h1 className="hero-title">COREPULSE</h1>
+          <h2 className="hero-subtitle">Smart Hospital Management Ecosystem</h2>
+          <div className="hero-tags">
+            <span className="tag">Connecting Doctors</span>
+            <span className="tag-dot">•</span>
+            <span className="tag">Nurses</span>
+            <span className="tag-dot">•</span>
+            <span className="tag">Receptionists</span>
+            <span className="tag-dot">•</span>
+            <span className="tag">Patients</span>
           </div>
         </div>
+      </div>
+
+      {/* LOGIN CARDS SECTION */}
+      <div className="login-cards-container">
+        
+        {/* STAFF LOGIN CARD */}
+        <div className="login-card staff-card">
+          <div className="card-header">
+            <div className="card-icon staff-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <h3>Staff Login</h3>
+            <p>Access your dashboard</p>
+          </div>
+
+          <div className="card-body">
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                name="username"
+                type="text"
+                placeholder="Enter username"
+                value={staffForm.username}
+                onChange={handleStaffChange}
+                onKeyPress={handleStaffKeyPress}
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                name="password"
+                type="password"
+                placeholder="Enter password"
+                value={staffForm.password}
+                onChange={handleStaffChange}
+                onKeyPress={handleStaffKeyPress}
+              />
+            </div>
+
+            {staffError && <div className="error-msg">{staffError}</div>}
+
+            <button 
+              className="login-btn staff-btn" 
+              onClick={handleStaffLogin} 
+              disabled={staffLoading}
+            >
+              {staffLoading ? "Authenticating..." : "Login as Staff"}
+            </button>
+            <div className="card-footer">
+              <Link to="/reset">Forgot Password?</Link>
+            </div>
+          </div>
+        </div>
+
+        {/* PATIENT LOGIN CARD */}
+        <div className="login-card patient-card">
+          <div className="card-header">
+            <div className="card-icon patient-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                <line x1="7" y1="7" x2="7.01" y2="7" />
+              </svg>
+            </div>
+            <h3>Patient Login</h3>
+            <p>View your records & history</p>
+          </div>
+
+          <div className="card-body">
+            <div className="form-group">
+              <label>PRN Number</label>
+              <input
+                name="prn"
+                type="text"
+                placeholder="Enter PRN"
+                value={patientForm.prn}
+                onChange={handlePatientChange}
+                onKeyPress={handlePatientKeyPress}
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                name="password"
+                type="password"
+                placeholder="Enter password"
+                value={patientForm.password}
+                onChange={handlePatientChange}
+                onKeyPress={handlePatientKeyPress}
+              />
+            </div>
+
+            {patientError && <div className="error-msg">{patientError}</div>}
+
+            <button 
+              className="login-btn patient-btn" 
+              onClick={handlePatientLogin} 
+              disabled={patientLoading}
+            >
+              {patientLoading ? "Authenticating..." : "Login as Patient"}
+            </button>
+            <div className="card-footer">
+              <span>Secure encrypted connection</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
