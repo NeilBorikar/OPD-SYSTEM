@@ -55,12 +55,12 @@ function PatientLogin() {
                 <rect x="23" y="19" width="2" height="6" rx="1" fill="#0ea5e9"/>
               </svg>
             </div>
-            <h1 style={styles.brandName}>CorePulse</h1>
+            <h1 style={styles.brandName} className="white-heading">CorePulse</h1>
             <p style={styles.brandTagline}>OPD Management System</p>
 
             <div style={styles.divider} />
 
-            <h2 style={styles.welcomeTitle}>Welcome Back,<br />Patient!</h2>
+            <h2 style={styles.welcomeTitle} className="white-heading">Welcome Back,<br />Patient!</h2>
             <p style={styles.welcomeDesc}>
               Access your health records, appointments, and consultation history — all in one place.
             </p>
@@ -224,6 +224,7 @@ function PatientLogin() {
           border-color: #0ea5e9 !important;
           box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
           background: #fff !important;
+          color: #0f172a !important;
         }
         #patient-login-btn:hover:not(:disabled) {
           transform: translateY(-2px) !important;
@@ -232,8 +233,13 @@ function PatientLogin() {
         #patient-login-btn:active:not(:disabled) {
           transform: translateY(0) !important;
         }
-        .patient-login-heading {
+        .patient-login-heading, .white-heading {
           color: white !important;
+          background: none !important;
+          -webkit-background-clip: unset !important;
+          -webkit-text-fill-color: white !important;
+          background-clip: unset !important;
+          text-shadow: none !important;
         }
       `}</style>
     </div>
