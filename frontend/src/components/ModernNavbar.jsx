@@ -19,7 +19,7 @@ const ModernNavbar = () => {
     { to: "/home", label: "Patient Lookup" },
     { to: "/register", label: "Register Patient" },
     { to: "/consultation", label: "Consultation" },
-    { to: "/history", label: "History" },
+    { to: "/doctor-dashboard", label: "🏠 Dashboard" },
   ];
 
   const handleLogout = () => {
