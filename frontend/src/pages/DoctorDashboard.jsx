@@ -25,12 +25,62 @@ function DoctorDashboard() {
     fetchPatients();
   }, [fetchPatients]);
 
+  const normalizeTime = (val) => {
+    if (!val) return "";
+    let cleaned = val.replace(/\./g, ":").trim();
+    const parts = cleaned.split(":");
+    if (parts.length === 2) {
+      let hh = parts[0].padStart(2, "0");
+      let mm = parts[1].padStart(2, "0");
+      if (/^\d{2}$/.test(hh) && /^\d{2}$/.test(mm)) {
+        return `${hh}:${mm}`;
+      }
+    }
+    return cleaned;
+  };
+
   const handleSetSession = async () => {
+    const startTimeClean = normalizeTime(sessionTime.start);
+    const endTimeClean = normalizeTime(sessionTime.end);
+
+    const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!timeRegex.test(startTimeClean) || !timeRegex.test(endTimeClean)) {
+      alert("Invalid time format. Please enter time as HH:MM or HH.MM (e.g. 11:30 or 11.30)");
+      return;
+    }
+
+    const getLocalDateString = () => {
+      const d = new Date();
+      const offset = d.getTimezoneOffset();
+      const localDate = new Date(d.getTime() - (offset * 60 * 1000));
+      return localDate.toISOString().split('T')[0];
+    };
+
+    const todayStr = getLocalDateString();
+    if (sessionTime.date < todayStr) {
+      alert("Cannot set visiting hours for a past date.");
+      return;
+    }
+
+    if (sessionTime.date === todayStr) {
+      const now = new Date();
+      const currentHHMM = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      if (startTimeClean < currentHHMM) {
+        alert("Cannot create appointments before current time.");
+        return;
+      }
+    }
+
+    if (endTimeClean <= startTimeClean) {
+      alert("End time must be after start time.");
+      return;
+    }
+
     try {
       await setDoctorSession({
         doctor_username: doctorUsername,
-        start_time: sessionTime.start,
-        end_time: sessionTime.end,
+        start_time: startTimeClean,
+        end_time: endTimeClean,
         date: sessionTime.date
       });
       alert("Visiting hours set and slots generated!");
@@ -57,12 +107,6 @@ function DoctorDashboard() {
     }
   };
 
-  const timeOptions = [];
-  for (let i = 0; i < 24; i++) {
-    const hh = i < 10 ? `0${i}` : `${i}`;
-    timeOptions.push(`${hh}:00`);
-  }
-
   return (
     <div style={{ padding: "20px" }}>
       <h2>Doctor Dashboard ({doctorUsername})</h2>
@@ -72,21 +116,21 @@ function DoctorDashboard() {
           <h3 style={{ marginBottom: "15px", color: "#1e293b" }}>Set Daily Visiting Hours</h3>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "15px" }}>
             <label style={{ fontWeight: "600" }}>Start:</label>
-            <select 
+            <input 
+              type="text"
+              placeholder="e.g. 11.00"
               value={sessionTime.start} 
               onChange={e => setSessionTime({...sessionTime, start: e.target.value})}
-              style={{ padding: "8px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-            >
-              {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
+              style={{ padding: "8px", borderRadius: "6px", border: "1px solid #cbd5e1", width: "90px" }}
+            />
             <label style={{ fontWeight: "600" }}>End:</label>
-            <select 
+            <input 
+              type="text"
+              placeholder="e.g. 14.00"
               value={sessionTime.end} 
               onChange={e => setSessionTime({...sessionTime, end: e.target.value})}
-              style={{ padding: "8px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-            >
-              {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
+              style={{ padding: "8px", borderRadius: "6px", border: "1px solid #cbd5e1", width: "90px" }}
+            />
             <label style={{ fontWeight: "600" }}>Date:</label>
             <input 
               type="date"
@@ -110,7 +154,7 @@ function DoctorDashboard() {
               Set Session
             </button>
           </div>
-          <p style={{ fontSize: "0.85em", color: "#64748b" }}>* Generates 10-minute slots. Existing unused slots for today will be reset.</p>
+          <p style={{ fontSize: "0.85em", color: "#64748b" }}>* Generates 10-minute slots. Enter time in HH:MM or HH.MM format (e.g. 11.30). Existing unused slots for the selected date will be reset.</p>
         </div>
 
         <div style={{ flex: 1, padding: "20px", border: "1px solid #e2e8f0", borderRadius: "12px", backgroundColor: "#f8fafc", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}>

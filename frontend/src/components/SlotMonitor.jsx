@@ -63,7 +63,34 @@ function SlotMonitor({ doctorFilter = null, showActions = false, prn = null }) {
   };
 
   // Grouping logic
-  const processedSlots = [...slots].sort((a, b) => a.time.localeCompare(b.time));
+  const getLocalDateString = () => {
+    const d = new Date();
+    const offset = d.getTimezoneOffset();
+    const localDate = new Date(d.getTime() - (offset * 60 * 1000));
+    return localDate.toISOString().split('T')[0];
+  };
+
+  const todayStr = getLocalDateString();
+  const now = new Date();
+  const currentHHMM = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+  const processedSlots = [...slots]
+    .sort((a, b) => a.time.localeCompare(b.time))
+    .filter(s => {
+      if (s.date === todayStr) {
+        try {
+          const parts = s.time.split(" - ");
+          if (parts.length === 2) {
+            const endTime = parts[1];
+            return endTime > currentHHMM;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return true;
+    });
+
   const groupedSlots = processedSlots.reduce((acc, slot) => {
     if (!acc[slot.doctor_username]) acc[slot.doctor_username] = [];
     acc[slot.doctor_username].push(slot);
