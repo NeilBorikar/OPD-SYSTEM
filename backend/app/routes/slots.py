@@ -75,8 +75,9 @@ async def set_doctor_session(request: DoctorScheduleRequest):
 
 @router.get("/", response_model=List[dict])
 async def get_all_slots(date: str = None, doctor_username: str = None):
+    current_date_ist = datetime.now(IST).strftime("%Y-%m-%d")
     if not date:
-        date = datetime.now(IST).strftime("%Y-%m-%d")
+        date = current_date_ist
     
     query = {"date": date}
     if doctor_username and doctor_username not in ("null", "undefined", ""):
@@ -86,6 +87,22 @@ async def get_all_slots(date: str = None, doctor_username: str = None):
     # Convert ObjectId to str for response
     for s in slots:
         s["_id"] = str(s["_id"])
+        
+    # If date is today, filter out slots whose end time has already passed
+    if date == current_date_ist:
+        current_time_ist = datetime.now(IST).strftime("%H:%M")
+        filtered_slots = []
+        for s in slots:
+            try:
+                time_range = s.get("time", "")
+                if " - " in time_range:
+                    _, end_str = time_range.split(" - ")
+                    if end_str > current_time_ist:
+                        filtered_slots.append(s)
+            except Exception:
+                filtered_slots.append(s)
+        return filtered_slots
+        
     return slots
 
 @router.post("/book")
