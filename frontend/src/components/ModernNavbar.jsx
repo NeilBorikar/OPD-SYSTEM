@@ -10,6 +10,7 @@ const ModernNavbar = () => {
 
   const userRole = localStorage.getItem("user_role");
   const isDoctor = userRole === "doctor";
+  const isReceptionist = userRole === "receptionist";
   const isLoggedIn = !!userRole;
 
   const isActiveRoute = (path) => location.pathname === path;
@@ -17,9 +18,14 @@ const ModernNavbar = () => {
   // Only doctors see these nav links
   const doctorNavLinks = [
     { to: "/home", label: "Patient Lookup" },
-    { to: "/register", label: "Register Patient" },
     { to: "/consultation", label: "Consultation" },
     { to: "/doctor-dashboard", label: "🏠 Dashboard" },
+  ];
+
+  // Only receptionists see these nav links
+  const receptionistNavLinks = [
+    { to: "/reception-dashboard", label: "🏠 Dashboard" },
+    { to: "/register", label: "Register Patient" },
   ];
 
   const handleLogout = () => {
@@ -48,6 +54,17 @@ const ModernNavbar = () => {
         <div className="nav-links-desktop">
           {/* Doctor nav links — only visible when logged in as doctor */}
           {isDoctor && doctorNavLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={`nav-link ${isActiveRoute(link.to) ? "active" : ""}`}
+            >
+              <span className="nav-label">{link.label}</span>
+            </Link>
+          ))}
+
+          {/* Receptionist nav links — only visible when logged in as receptionist */}
+          {isReceptionist && receptionistNavLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
@@ -86,6 +103,17 @@ const ModernNavbar = () => {
       {isMobileMenuOpen && (
         <div className="mobile-menu">
           {isDoctor && doctorNavLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={`mobile-nav-link ${isActiveRoute(link.to) ? "active" : ""}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <span className="nav-label">{link.label}</span>
+            </Link>
+          ))}
+
+          {isReceptionist && receptionistNavLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}

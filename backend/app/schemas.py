@@ -94,7 +94,7 @@ class ReceptionistLoginSchema(BaseModel):
     password: str
 
 class PatientRegisterSchema(BaseModel):
-    prn: str
+    prn: Optional[str] = None
     name: str
     password: str
     age: int
@@ -104,7 +104,6 @@ class PatientRegisterSchema(BaseModel):
     consultationDate: Optional[str] = None
     department: Optional[str] = None
     consultant: Optional[str] = None
-    regNo: Optional[str] = None
     assigned_room: Optional[str] = None
     assigned_doctor: Optional[str] = None
     severityIndex: Optional[str] = None

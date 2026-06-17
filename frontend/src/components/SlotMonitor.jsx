@@ -118,7 +118,7 @@ function SlotMonitor({ doctorFilter = null, showActions = false, prn = null }) {
                onChange={(e) => setSelectedDoctor(e.target.value)}
                style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", minWidth: "160px" }}
              >
-               <option value="">All Doctors</option>
+               <option value="">{prn ? "Select Doctor" : "All Doctors"}</option>
                {doctors.map(d => (
                  <option key={d.username} value={d.username}>{d.full_name}</option>
                ))}
@@ -139,7 +139,20 @@ function SlotMonitor({ doctorFilter = null, showActions = false, prn = null }) {
       </div>
 
       {/* Slots Display Section */}
-      {Object.keys(groupedSlots).length > 0 ? (
+      {!selectedDoctor && prn ? (
+        <div style={{
+          textAlign: "center",
+          padding: "30px",
+          backgroundColor: "#f0fdf4",
+          border: "1px dashed #bbf7d0",
+          borderRadius: "12px",
+          color: "#166534",
+          fontWeight: "600",
+          width: "100%"
+        }}>
+          👈 Please select a doctor from the dropdown above to see their schedule and book an appointment.
+        </div>
+      ) : Object.keys(groupedSlots).length > 0 ? (
         Object.keys(groupedSlots).map(doctor => (
           <div key={doctor} className="doctor-slot-group">
             <h4 className="doctor-name-heading">Dr. {doctor}</h4>

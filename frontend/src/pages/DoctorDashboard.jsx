@@ -200,6 +200,7 @@ function DoctorDashboard() {
                 <th>Priority</th>
                 <th>Room</th>
                 <th>Nurseline Logs</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -251,6 +252,35 @@ function DoctorDashboard() {
                       ))}
                       {(p.tasks_for_nurse || []).length === 0 && <span style={{ color: "#94a3b8", fontSize: "0.85rem" }}>No tasks</span>}
                     </ul>
+                  </td>
+                  <td>
+                    <button
+                      onClick={async () => {
+                        if (window.confirm(`Are you sure you want to remove ${p.name} from active list?`)) {
+                          try {
+                            await updatePatient(p.prn, { active: false });
+                            alert(`Patient ${p.name} removed from active list.`);
+                            fetchPatients();
+                          } catch (err) {
+                            alert("Failed to remove patient: " + err.message);
+                          }
+                        }
+                      }}
+                      style={{
+                        padding: "6px 12px",
+                        backgroundColor: "#ef4444",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                        transition: "background-color 0.2s"
+                      }}
+                      onMouseOver={(e) => e.target.style.backgroundColor = "#dc2626"}
+                      onMouseOut={(e) => e.target.style.backgroundColor = "#ef4444"}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -9,15 +9,18 @@ router = APIRouter()
 
 @router.post("/register")
 async def register_patient(data: PatientRegisterSchema):
-    prn_str = str(data.prn).strip()
-    existing_patient = await patients_collection.find_one({"prn": prn_str})
-    if existing_patient:
-        raise HTTPException(status_code=400, detail="PRN already exists")
-    
+    import random
+    while True:
+        prn_str = str(random.randint(10000000, 99999999))
+        existing_patient = await patients_collection.find_one({"prn": prn_str})
+        if not existing_patient:
+            break
+            
     patient_doc = data.dict()
-    patient_doc["prn"] = prn_str # Ensure string
+    patient_doc["prn"] = prn_str
+    patient_doc["active"] = True
     result = await patients_collection.insert_one(patient_doc)
-    return {"message": "Patient registered", "id": str(result.inserted_id)}
+    return {"message": "Patient registered", "id": str(result.inserted_id), "prn": prn_str}
 
 @router.post("/login-patient")
 async def login_patient(data: PatientLoginSchema):
@@ -29,7 +32,7 @@ async def login_patient(data: PatientLoginSchema):
 
 @router.get("/patients/reception")
 async def get_patients_for_reception():
-    cursor = patients_collection.find({})
+    cursor = patients_collection.find({"active": {"$ne": False}})
     patients = []
     async for patient in cursor:
         patient["_id"] = str(patient["_id"])
@@ -39,7 +42,7 @@ async def get_patients_for_reception():
 @router.get("/patients/ordered")
 async def get_patients_ordered():
     # Sort by severityIndex descending based on custom weights string to int
-    cursor = patients_collection.find({})
+    cursor = patients_collection.find({"active": {"$ne": False}})
     patients = []
     
     # Custom severity ranking

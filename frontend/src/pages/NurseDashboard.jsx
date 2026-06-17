@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getPatientsOrdered, getNurseTasks, completeTask, getSlots } from "../services/api";
+import { getPatientsOrdered, getNurseTasks, completeTask, getSlots, updatePatient } from "../services/api";
 import { useLocation, Link } from "react-router-dom";
 import SlotMonitor from "../components/SlotMonitor";
 
@@ -144,6 +144,7 @@ function NurseDashboard() {
                 <th>Assigned Room</th>
                 <th>Your Tasks</th>
                 <th>Other Tasks</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -183,12 +184,41 @@ function NurseDashboard() {
                         <span className="empty-state">None</span>
                       )}
                     </td>
+                    <td>
+                      <button
+                        onClick={async () => {
+                          if (window.confirm(`Are you sure you want to remove ${p.name} from active list?`)) {
+                            try {
+                              await updatePatient(p.prn, { active: false });
+                              alert(`Patient ${p.name} removed from active list.`);
+                              fetchPatients();
+                            } catch (err) {
+                              alert("Failed to remove patient: " + err.message);
+                            }
+                          }
+                        }}
+                        style={{
+                          padding: "6px 12px",
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          transition: "background-color 0.2s"
+                        }}
+                        onMouseOver={(e) => e.target.style.backgroundColor = "#dc2626"}
+                        onMouseOut={(e) => e.target.style.backgroundColor = "#ef4444"}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
               {filteredPatients.length === 0 && (
                 <tr>
-                  <td colSpan="6" className="no-results">No patients match your search.</td>
+                  <td colSpan="7" className="no-results">No patients match your search.</td>
                 </tr>
               )}
             </tbody>

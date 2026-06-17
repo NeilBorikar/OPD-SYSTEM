@@ -15,11 +15,9 @@ const Register = () => {
     sex: "",
     address: "",
     phone: "",
-    prn: "",
     consultationDate: "",
     department: "",
     consultant: "",
-    regNo: "",
     password: "",
     severityIndex: "normal"
   });
@@ -55,7 +53,7 @@ const Register = () => {
 
     console.log("Registered:", result);
 
-    alert("Patient Registered Successfully!");
+    alert(`Patient Registered Successfully! Generated PRN: ${result.prn}. Please write this down to log in.`);
 
     // reset form
     setPatient({
@@ -64,17 +62,20 @@ const Register = () => {
       sex: "",
       address: "",
       phone: "",
-      prn: "",
       consultationDate: "",
       department: "",
       consultant: "",
-      regNo: "",
       password: "",
       severityIndex: "normal"
     });
     setConfirmPassword("");
    
-    navigate("/consultation", { state: { prn: patient.prn } });
+    const userRole = localStorage.getItem("user_role");
+    if (userRole === "receptionist") {
+      navigate("/reception-dashboard");
+    } else {
+      navigate("/login");
+    }
 
   } catch (error) {
 
@@ -137,13 +138,7 @@ const Register = () => {
           style={styles.input}
         />
 
-        <input
-          name="prn"
-          placeholder="PRN / PSN Number"
-          value={patient.prn}
-          onChange={handleChange}
-          style={styles.input}
-        />
+
 
         <input
           type="date"
@@ -169,13 +164,7 @@ const Register = () => {
           style={styles.input}
         />
 
-        <input
-          name="regNo"
-          placeholder="Registration Number"
-          value={patient.regNo}
-          onChange={handleChange}
-          style={styles.input}
-        />
+
 
         {/* Password Section */}
         <div style={styles.sectionLabel}>🔐 Patient Portal Password</div>

@@ -7,7 +7,7 @@ function PatientDashboard() {
   const [history, setHistory] = useState([]);
   const [patientData, setPatientData] = useState(null);
   const location = useLocation();
-  const prn = location.state?.prn;
+  const prn = location.state?.prn || localStorage.getItem("patient_prn");
 
   const fetchHistory = useCallback(async () => {
     try {
