@@ -73,6 +73,11 @@ async def set_doctor_session(request: DoctorScheduleRequest):
     
     return {"message": f"Generated {len(slots)} slots for {request.doctor_username} on {session_date}"}
 
+@router.get("/doctors", response_model=List[dict])
+async def get_all_doctors():
+    doctors = await doctors_collection.find({}, {"_id": 0, "username": 1, "full_name": 1}).to_list(1000)
+    return doctors
+
 @router.get("/", response_model=List[dict])
 async def get_all_slots(date: str = None, doctor_username: str = None):
     current_date_ist = datetime.now(IST).strftime("%Y-%m-%d")
