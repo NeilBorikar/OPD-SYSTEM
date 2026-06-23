@@ -1,14 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from app.database import patients_collection, tasks_collection
 from app.schemas import PatientRegisterSchema, PatientLoginSchema, TaskAssignSchema, TaskSchema
 from datetime import datetime, timezone, timedelta
 IST = timezone(timedelta(hours=5, minutes=30))
 from typing import List
+from app.utils.sms import send_sms
 
 router = APIRouter()
 
 @router.post("/register")
-async def register_patient(data: PatientRegisterSchema):
+async def register_patient(data: PatientRegisterSchema, background_tasks: BackgroundTasks):
     import random
     while True:
         prn_str = str(random.randint(10000000, 99999999))
@@ -20,6 +21,14 @@ async def register_patient(data: PatientRegisterSchema):
     patient_doc["prn"] = prn_str
     patient_doc["active"] = True
     result = await patients_collection.insert_one(patient_doc)
+    
+    if data.phone:
+        sms_body = (
+            f"Hello {data.name}, your registration at Corepulse is successful! "
+            f"Your PRN is {prn_str}. Please use this PRN to login."
+        )
+        background_tasks.add_task(send_sms, data.phone, sms_body)
+        
     return {"message": "Patient registered", "id": str(result.inserted_id), "prn": prn_str}
 
 @router.post("/login-patient")
