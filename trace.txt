@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<string>", line 3, in <module>
+  File "D:\internship\women_safety_backend\app\main.py", line 9, in <module>
+    from app.routes import (
+  File "D:\internship\women_safety_backend\app\routes\auth_routes.py", line 3, in <module>
+    from app.services.auth_service import AuthService
+  File "D:\internship\women_safety_backend\app\services\auth_service.py", line 1, in <module>
+    from app.repositories.user_repo import UserRepository
+  File "D:\internship\women_safety_backend\app\repositories\user_repo.py", line 1, in <module>
+    from app.db.mongodb import user_collection
+ImportError: cannot import name 'user_collection' from 'app.db.mongodb' (D:\internship\women_safety_backend\app\db\mongodb.py)

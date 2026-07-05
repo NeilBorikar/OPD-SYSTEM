@@ -1,0 +1,44 @@
+# ========================
+# FASTAPI CORE
+# ========================
+fastapi==0.111.0
+uvicorn==0.30.1
+
+# ========================
+# DATABASE (MONGODB)
+# ========================
+motor==3.5.1
+pymongo==4.7.2
+
+# ========================
+# DATA VALIDATION
+# ========================
+pydantic==2.7.1
+pydantic-settings==2.3.3
+email-validator==2.1.1
+
+# ========================
+# AUTHENTICATION & SECURITY
+# ========================
+python-jose==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.1.3
+
+# ========================
+# ENV MANAGEMENT
+# ========================
+python-dotenv==1.0.1
+
+# ========================
+# SMS (TWILIO)
+# ========================
+twilio==9.2.3
+
+# ========================
+# OPTIONAL (RECOMMENDED FOR PRODUCTION)
+# ========================
+# Logging & utilities (future scaling)
+# loguru==0.7.2
+
+# Async utilities (if needed later)
+# anyio==4.4.0

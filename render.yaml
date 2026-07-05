@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: women-safety-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: MONGO_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: EMAIL
+        sync: false
+      - key: EMAIL_PASSWORD
+        sync: false
+      - key: SMTP_SERVER
+        value: "smtp.gmail.com"
+      - key: SMTP_PORT
+        value: "587"
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_PHONE_NUMBER
+        sync: false
