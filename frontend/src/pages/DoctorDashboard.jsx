@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { getPatientsOrdered, assignTask, setDoctorSession, updatePatient } from "../services/api";
+import { getPatientsOrdered, assignTask, setDoctorSession, updatePatient, getDoctorQueries, answerQuery } from "../services/api";
 import SlotMonitor from "../components/SlotMonitor";
 
 function DoctorDashboard() {
   const [patients, setPatients] = useState([]);
+  const [queries, setQueries] = useState([]);
+  const [answerInputs, setAnswerInputs] = useState({});
   const [taskForm, setTaskForm] = useState({ prn: "", task: "", nurse_username: "" });
   const [sessionTime, setSessionTime] = useState({ 
     start: "09:00", 
@@ -21,9 +23,43 @@ function DoctorDashboard() {
     }
   }, []);
 
+  const fetchDoctorQueriesList = useCallback(async () => {
+    if (!doctorUsername) return;
+    try {
+      const data = await getDoctorQueries(doctorUsername);
+      setQueries(data);
+    } catch (err) {
+      console.error("Error fetching doctor queries:", err);
+    }
+  }, [doctorUsername]);
+
   useEffect(() => {
     fetchPatients();
-  }, [fetchPatients]);
+    fetchDoctorQueriesList();
+
+    const queryInterval = setInterval(fetchDoctorQueriesList, 15000);
+    return () => clearInterval(queryInterval);
+  }, [fetchPatients, fetchDoctorQueriesList]);
+
+  const handleAnswerSubmit = async (queryId) => {
+    const text = answerInputs[queryId];
+    if (!text || !text.trim()) {
+      alert("Please enter an answer before submitting.");
+      return;
+    }
+    try {
+      await answerQuery(queryId, {
+        answer_text: text.trim(),
+        answered_by_role: "Doctor",
+        answered_by_name: `Dr. ${doctorUsername}`
+      });
+      alert("Query answered successfully!");
+      setAnswerInputs(prev => ({ ...prev, [queryId]: "" }));
+      fetchDoctorQueriesList();
+    } catch (err) {
+      alert("Failed to submit answer: " + err.message);
+    }
+  };
 
   const normalizeTime = (val) => {
     if (!val) return "";
@@ -84,7 +120,6 @@ function DoctorDashboard() {
         date: sessionTime.date
       });
       alert("Visiting hours set and slots generated!");
-      // Force refresh SlotMonitor
       window.location.reload();
     } catch (err) {
       alert("Failed to set session: " + err.message);
@@ -163,6 +198,86 @@ function DoctorDashboard() {
           <SlotMonitor doctorFilter={doctorUsername} showActions={true} />
         </div>
       </div>
+
+      {/* Forwarded Patient Queries Section */}
+      <section style={{ marginBottom: "30px", padding: "20px", border: "1px solid #e2e8f0", borderRadius: "12px", backgroundColor: "white", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
+          <h3 style={{ margin: 0, color: "#1e293b", display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontSize: "1.5rem" }}>💬</span> Forwarded Patient Queries
+          </h3>
+          <span style={{ padding: "4px 12px", backgroundColor: "#f3e8ff", color: "#6b21a8", borderRadius: "12px", fontSize: "0.85rem", fontWeight: "700" }}>
+            {queries.filter(q => q.status !== "answered").length} Forwarded to You
+          </span>
+        </div>
+        <p style={{ fontSize: "0.85em", color: "#64748b", marginBottom: "15px" }}>
+          Queries forwarded to you by Receptionists or Nurses. Your answer will be directly visible to the patient.
+        </p>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {queries.length > 0 ? (
+            queries.map((q) => (
+              <div key={q._id} style={{
+                padding: "16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#faf5ff",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.02)"
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", flexWrap: "wrap", gap: "8px" }}>
+                  <div>
+                    <strong style={{ color: "#0f172a", fontSize: "1rem" }}>{q.patient_name}</strong>
+                    <span style={{ marginLeft: "10px", fontSize: "0.85rem", color: "#64748b" }}>PRN: {q.patient_prn}</span>
+                    <span style={{ marginLeft: "15px", fontSize: "0.8rem", color: "#7e22ce", fontWeight: "600" }}>
+                      Forwarded by {q.forwarded_by_name} ({q.forwarded_by_role})
+                    </span>
+                  </div>
+                  <span style={{
+                    padding: "4px 12px",
+                    borderRadius: "20px",
+                    fontSize: "0.8rem",
+                    fontWeight: "700",
+                    backgroundColor: q.status === "answered" ? "#dcfce7" : "#f3e8ff",
+                    color: q.status === "answered" ? "#166534" : "#6b21a8"
+                  }}>
+                    {q.status === "answered" ? `✅ Answered by You` : "⌛ Pending Your Answer"}
+                  </span>
+                </div>
+
+                <div style={{ fontSize: "0.95rem", color: "#334155", fontWeight: "500", marginBottom: "12px", padding: "10px 14px", backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e9d5ff" }}>
+                  "{q.query_text}"
+                </div>
+
+                {q.status === "answered" ? (
+                  <div style={{ padding: "10px 14px", backgroundColor: "#f0fdf4", borderRadius: "8px", borderLeft: "4px solid #22c55e" }}>
+                    <div style={{ fontSize: "0.8rem", fontWeight: "700", color: "#166534" }}>Your Answer:</div>
+                    <div style={{ fontSize: "0.95rem", color: "#14532d" }}>{q.answer_text}</div>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                    <input
+                      type="text"
+                      placeholder="Type doctor's advice / answer to patient..."
+                      value={answerInputs[q._id] || ""}
+                      onChange={(e) => setAnswerInputs({ ...answerInputs, [q._id]: e.target.value })}
+                      style={{ flex: 1, minWidth: "250px", padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "0.9rem" }}
+                    />
+                    <button
+                      onClick={() => handleAnswerSubmit(q._id)}
+                      style={{ padding: "8px 20px", backgroundColor: "#7e22ce", color: "white", border: "none", borderRadius: "8px", fontWeight: "700", cursor: "pointer" }}
+                    >
+                      Answer Query
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div style={{ textAlign: "center", padding: "20px", backgroundColor: "#faf5ff", borderRadius: "8px", border: "1px dashed #d8b4fe" }}>
+              <p style={{ color: "#7e22ce", margin: 0, fontSize: "0.9rem" }}>No patient queries forwarded to you at this time.</p>
+            </div>
+          )}
+        </div>
+      </section>
 
       <div style={{ marginBottom: "30px", padding: "20px", border: "1px solid #e2e8f0", borderRadius: "12px", backgroundColor: "white", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}>
         <h3 style={{ marginBottom: "15px", color: "#1e293b" }}>Assign Task to Nurse</h3>

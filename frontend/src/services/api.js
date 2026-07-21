@@ -231,3 +231,57 @@ export const bookSlot = async (slotId, patientPrn) => {
   }
   return response.json();
 };
+
+export const getLiveQueueStatus = async (prn) => {
+  const response = await fetch(`${API_BASE}/slots/live-queue/${prn}`);
+  if (!response.ok) throw new Error("Failed to fetch live queue status");
+  return response.json();
+};
+
+export const createPatientQuery = async (data) => {
+  const response = await fetch(`${API_BASE}/queries/create`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) throw new Error("Failed to submit query");
+  return response.json();
+};
+
+export const getPatientQueries = async (prn) => {
+  const response = await fetch(`${API_BASE}/queries/patient/${prn}`);
+  if (!response.ok) throw new Error("Failed to fetch patient queries");
+  return response.json();
+};
+
+export const getStaffQueries = async () => {
+  const response = await fetch(`${API_BASE}/queries/staff`);
+  if (!response.ok) throw new Error("Failed to fetch staff queries");
+  return response.json();
+};
+
+export const getDoctorQueries = async (doctorUsername) => {
+  const response = await fetch(`${API_BASE}/queries/doctor/${doctorUsername}`);
+  if (!response.ok) throw new Error("Failed to fetch doctor queries");
+  return response.json();
+};
+
+export const answerQuery = async (queryId, data) => {
+  const response = await fetch(`${API_BASE}/queries/${queryId}/answer`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) throw new Error("Failed to answer query");
+  return response.json();
+};
+
+export const forwardQuery = async (queryId, data) => {
+  const response = await fetch(`${API_BASE}/queries/${queryId}/forward`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) throw new Error("Failed to forward query");
+  return response.json();
+};
