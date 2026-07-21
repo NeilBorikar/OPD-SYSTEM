@@ -124,6 +124,7 @@ class SlotSchema(BaseModel):
     is_booked: bool = False
     is_completed: bool = False
     patient_prn: Optional[str] = None
+    token_number: Optional[int] = None
     date: str  # Format: "YYYY-MM-DD"
 
     class Config:
@@ -147,3 +148,19 @@ class TaskSchema(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+
+class QueryCreateSchema(BaseModel):
+    patient_prn: str
+    patient_name: str
+    query_text: str
+
+class QueryAnswerSchema(BaseModel):
+    answer_text: str
+    answered_by_role: str
+    answered_by_name: str
+
+class QueryForwardSchema(BaseModel):
+    doctor_username: str
+    doctor_name: str
+    forwarded_by_role: str
+    forwarded_by_name: str

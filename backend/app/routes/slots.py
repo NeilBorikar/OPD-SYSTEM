@@ -52,6 +52,7 @@ async def set_doctor_session(request: DoctorScheduleRequest):
 
     slots = []
     current_time = start_time
+    token_counter = 1
     while current_time < end_time:
         next_time = current_time + timedelta(minutes=10)
         if next_time > end_time:
@@ -64,8 +65,10 @@ async def set_doctor_session(request: DoctorScheduleRequest):
             "is_booked": False,
             "is_completed": False,
             "patient_prn": None,
+            "token_number": token_counter,
             "date": session_date
         })
+        token_counter += 1
         current_time = next_time
 
     if slots:
@@ -202,5 +205,106 @@ async def complete_slot(slot_id: str):
         print(f"Error during slot adjustment: {e}")
         
     return {"message": "Slot completed and subsequent slots adjusted successfully"}
+
+
+@router.get("/live-queue/{prn}")
+async def get_live_queue(prn: str):
+    today = datetime.now(IST).strftime("%Y-%m-%d")
+    prn_str = str(prn).strip()
+    
+    # Find patient's active (booked and not completed) slot today
+    patient_slot = await slots_collection.find_one({
+        "patient_prn": prn_str,
+        "date": today,
+        "is_booked": True,
+        "is_completed": {"$ne": True}
+    })
+    
+    if not patient_slot:
+        # Check if patient completed a slot today
+        completed_slot = await slots_collection.find_one({
+            "patient_prn": prn_str,
+            "date": today,
+            "is_completed": True
+        })
+        if completed_slot:
+            return {
+                "has_booking": True,
+                "is_completed": True,
+                "doctor_username": completed_slot.get("doctor_username"),
+                "your_token": completed_slot.get("token_number") or 1,
+                "current_patient": completed_slot.get("token_number") or 1,
+                "estimated_wait_minutes": 0,
+                "status_message": "Your consultation for today is completed."
+            }
+        return {"has_booking": False}
+        
+    doctor_username = patient_slot.get("doctor_username")
+    
+    # Get all slots for this doctor today sorted by time
+    all_doctor_slots = await slots_collection.find({
+        "doctor_username": doctor_username,
+        "date": today
+    }).to_list(1000)
+    
+    all_doctor_slots.sort(key=lambda s: s.get("time", ""))
+    
+    for idx, s in enumerate(all_doctor_slots):
+        if "token_number" not in s or s["token_number"] is None:
+            s["token_number"] = idx + 1
+            
+    your_token = patient_slot.get("token_number")
+    if not your_token:
+        for idx, s in enumerate(all_doctor_slots):
+            if str(s.get("_id")) == str(patient_slot.get("_id")):
+                your_token = idx + 1
+                break
+        if not your_token:
+            your_token = 1
+
+    current_slot = None
+    for s in all_doctor_slots:
+        if s.get("is_booked") and not s.get("is_completed"):
+            current_slot = s
+            break
+            
+    if current_slot:
+        current_token = current_slot.get("token_number", 1)
+    else:
+        current_token = your_token
+
+    patients_ahead = max(0, your_token - current_token)
+    
+    now_ist = datetime.now(IST)
+    current_time_str = now_ist.strftime("%H:%M")
+    
+    try:
+        slot_start_str = patient_slot.get("time", "").split(" - ")[0]
+        slot_start_dt = datetime.strptime(slot_start_str, "%H:%M")
+        current_dt = datetime.strptime(current_time_str, "%H:%M")
+        
+        time_diff_mins = int((slot_start_dt - current_dt).total_seconds() / 60)
+        
+        if time_diff_mins > 0:
+            estimated_wait = time_diff_mins
+        else:
+            estimated_wait = patients_ahead * 10
+    except Exception:
+        estimated_wait = patients_ahead * 10
+        
+    if your_token == current_token:
+        estimated_wait = 0
+
+    return {
+        "has_booking": True,
+        "is_completed": False,
+        "doctor_username": doctor_username,
+        "slot_time": patient_slot.get("time"),
+        "your_token": your_token,
+        "current_patient": current_token,
+        "patients_ahead": patients_ahead,
+        "estimated_wait_minutes": max(0, estimated_wait)
+    }
+
 
 
