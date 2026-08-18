@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/global.css";
 
+const API_BASE = window.location.hostname === "localhost" 
+  ? "http://localhost:8000" 
+  : "https://corepulse-ysxr.onrender.com";
+
 const SuperAdminDashboard = () => {
   const [tab, setTab] = useState("clinics");
   const [clinics, setClinics] = useState([]);
@@ -24,7 +28,7 @@ const SuperAdminDashboard = () => {
   const fetchClinics = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/AEGIS@12250510/clinics");
+      const res = await fetch(`${API_BASE}/AEGIS@12250510/clinics`);
       const data = await res.json();
       setClinics(data);
     } catch (e) {
@@ -37,7 +41,7 @@ const SuperAdminDashboard = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/AEGIS@12250510/users");
+      const res = await fetch(`${API_BASE}/AEGIS@12250510/users`);
       const data = await res.json();
       setUsers(data);
     } catch (e) {

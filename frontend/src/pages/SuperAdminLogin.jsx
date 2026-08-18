@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "../styles/global.css";
 import "../styles/login.css";
 
+const API_BASE = window.location.hostname === "localhost" 
+  ? "http://localhost:8000" 
+  : "https://corepulse-ysxr.onrender.com";
+
 const SuperAdminLogin = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,7 +20,7 @@ const SuperAdminLogin = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/AEGIS@12250510/login", {
+      const res = await fetch(`${API_BASE}/AEGIS@12250510/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password })
