@@ -18,7 +18,27 @@ class Medicine(BaseModel):
     dose: str
 
 
+
+class ClinicSchema(BaseModel):
+    id: Optional[PyObjectId] = None
+    clinic_id: str
+    name: str
+    address: str
+    phone: str
+    email: str
+    verification_status: str = 'pending'
+    clinic_license: Optional[str] = None
+    medical_certificate: Optional[str] = None
+    tax_id: Optional[str] = None
+
+    class Config:
+        arbitrary_types_allowed = True
+
+class SuperAdminLoginSchema(BaseModel):
+    password: str
+
 class Consultation(BaseModel):
+    clinic_id: str
 
     patient_name: str
     age: int
@@ -45,6 +65,7 @@ class Consultation(BaseModel):
     severityIndex: Optional[str] = "normal"
 
 class LoginSchema(BaseModel):
+    clinic_id: str
     username: str
     password: str
 
@@ -54,6 +75,7 @@ class ResetPasswordSchema(BaseModel):
     new_password: str
 
 class DoctorRegisterSchema(BaseModel):
+    clinic_id: str
     username: str
     email: str
     password: str
@@ -64,6 +86,7 @@ class DoctorLoginSchema(BaseModel):
     password: str
 
 class DoctorSchema(BaseModel):
+    clinic_id: str
     id: Optional[PyObjectId] = None
     username: str
     email: str
@@ -74,6 +97,7 @@ class DoctorSchema(BaseModel):
         arbitrary_types_allowed = True
 
 class NurseRegisterSchema(BaseModel):
+    clinic_id: str
     username: str
     email: str
     password: str
@@ -84,6 +108,7 @@ class NurseLoginSchema(BaseModel):
     password: str
 
 class ReceptionistRegisterSchema(BaseModel):
+    clinic_id: str
     username: str
     email: str
     password: str
@@ -110,14 +135,17 @@ class PatientRegisterSchema(BaseModel):
     tasks_for_nurse: Optional[List[dict]] = [] # Changed to list of dicts for task objects
 
 class PatientLoginSchema(BaseModel):
+    clinic_id: str
     prn: str
     password: str
 
 class TaskAssignSchema(BaseModel):
+    clinic_id: str
     task: str
     nurse_username: str
 
 class SlotSchema(BaseModel):
+    clinic_id: str
     id: Optional[PyObjectId] = None
     doctor_username: str
     time: str  # Format: "HH:mm - HH:mm"
@@ -131,12 +159,14 @@ class SlotSchema(BaseModel):
         arbitrary_types_allowed = True
 
 class DoctorScheduleRequest(BaseModel):
+    clinic_id: str
     doctor_username: str
     start_time: str  # Format: "HH:mm"
     end_time: str    # Format: "HH:mm"
     date: Optional[str] = None # Format: "YYYY-MM-DD"
 
 class TaskSchema(BaseModel):
+    clinic_id: str
     id: Optional[PyObjectId] = None
     patient_prn: str
     patient_name: str
@@ -150,6 +180,7 @@ class TaskSchema(BaseModel):
         arbitrary_types_allowed = True
 
 class QueryCreateSchema(BaseModel):
+    clinic_id: str
     patient_prn: str
     patient_name: str
     query_text: str

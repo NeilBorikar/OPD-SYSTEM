@@ -52,13 +52,13 @@ async def create_consultation(data: Consultation):
 # GET PATIENT HISTORY
 # -----------------------------
 @router.get("/consultation/{prn}")
-async def get_patient_history(prn: str):
+async def get_patient_history(prn: str, clinic_id: str = 'IR'):
 
     prn = str(prn).strip()   # normalize input
 
     records = []
 
-    cursor = consultations_collection.find({"prn": prn})
+    cursor = consultations_collection.find({"prn": prn, "clinic_id": clinic_id}).sort("_id", -1)
 
     async for record in cursor:
         record["_id"] = str(record["_id"])

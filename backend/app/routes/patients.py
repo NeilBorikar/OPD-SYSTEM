@@ -95,6 +95,7 @@ async def assign_task(prn: str, data: TaskAssignSchema):
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
         
+    clinic_id = getattr(data, 'clinic_id', 'IR')
     # New logic: Insert into tasks_collection for the nurse task management system
     task_doc = {
         "patient_prn": prn_str,
@@ -102,7 +103,8 @@ async def assign_task(prn: str, data: TaskAssignSchema):
         "nurse_username": data.nurse_username,
         "task_content": data.task,
         "status": "pending",
-        "created_at": datetime.now(IST).isoformat()
+        "created_at": datetime.now(IST).isoformat(),
+        "clinic_id": clinic_id
     }
     task_result = await tasks_collection.insert_one(task_doc)
     

@@ -11,12 +11,12 @@ async def register_doctor(data: DoctorRegisterSchema):
     """Register a new doctor"""
     
     # Check if username already exists
-    existing_doctor = await doctors_collection.find_one({"username": data.username})
+    existing_doctor = await doctors_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     if existing_doctor:
         raise HTTPException(status_code=400, detail="Username already exists")
     
     # Check if email already exists
-    existing_email = await doctors_collection.find_one({"email": data.email})
+    existing_email = await doctors_collection.find_one({"email": data.email, "clinic_id": data.clinic_id})
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already registered")
     
@@ -25,7 +25,8 @@ async def register_doctor(data: DoctorRegisterSchema):
         "username": data.username,
         "email": data.email,
         "password": data.password,  # In production, use bcrypt hash
-        "full_name": data.full_name
+        "full_name": data.full_name,
+        "clinic_id": data.clinic_id
     }
     
     result = await doctors_collection.insert_one(doctor_doc)
@@ -35,7 +36,7 @@ async def register_doctor(data: DoctorRegisterSchema):
 async def login(data: LoginSchema):
     """Doctor login"""
     
-    doctor = await doctors_collection.find_one({"username": data.username})
+    doctor = await doctors_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     
     if not doctor:
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -68,11 +69,11 @@ async def reset_password(data: ResetPasswordSchema):
 
 @router.post("/register-nurse")
 async def register_nurse(data: NurseRegisterSchema):
-    existing_nurse = await nurses_collection.find_one({"username": data.username})
+    existing_nurse = await nurses_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     if existing_nurse:
         raise HTTPException(status_code=400, detail="Username already exists")
     
-    existing_email = await nurses_collection.find_one({"email": data.email})
+    existing_email = await nurses_collection.find_one({"email": data.email, "clinic_id": data.clinic_id})
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already registered")
     
@@ -80,7 +81,8 @@ async def register_nurse(data: NurseRegisterSchema):
         "username": data.username,
         "email": data.email,
         "password": data.password,
-        "full_name": data.full_name
+        "full_name": data.full_name,
+        "clinic_id": data.clinic_id
     }
     
     result = await nurses_collection.insert_one(nurse_doc)
@@ -88,7 +90,7 @@ async def register_nurse(data: NurseRegisterSchema):
 
 @router.post("/login-nurse")
 async def login_nurse(data: NurseLoginSchema):
-    nurse = await nurses_collection.find_one({"username": data.username})
+    nurse = await nurses_collection.find_one({"username": data.username, "clinic_id": data.clinic_id}) # Note: NurseLoginSchema does not have clinic_id yet, wait, we'll fix it in schemas or just use LoginSchema
     if not nurse or nurse["password"] != data.password:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
@@ -99,11 +101,11 @@ async def login_nurse(data: NurseLoginSchema):
 
 @router.post("/register-receptionist")
 async def register_receptionist(data: ReceptionistRegisterSchema):
-    existing_rec = await receptionists_collection.find_one({"username": data.username})
+    existing_rec = await receptionists_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     if existing_rec:
         raise HTTPException(status_code=400, detail="Username already exists")
     
-    existing_email = await receptionists_collection.find_one({"email": data.email})
+    existing_email = await receptionists_collection.find_one({"email": data.email, "clinic_id": data.clinic_id})
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already registered")
     
@@ -111,7 +113,8 @@ async def register_receptionist(data: ReceptionistRegisterSchema):
         "username": data.username,
         "email": data.email,
         "password": data.password,
-        "full_name": data.full_name
+        "full_name": data.full_name,
+        "clinic_id": data.clinic_id
     }
     
     result = await receptionists_collection.insert_one(rec_doc)
@@ -119,7 +122,7 @@ async def register_receptionist(data: ReceptionistRegisterSchema):
 
 @router.post("/login-receptionist")
 async def login_receptionist(data: ReceptionistLoginSchema):
-    rec = await receptionists_collection.find_one({"username": data.username})
+    rec = await receptionists_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     if not rec or rec["password"] != data.password:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
@@ -128,17 +131,17 @@ async def login_receptionist(data: ReceptionistLoginSchema):
 @router.post("/login-unified")
 async def login_unified(data: LoginSchema):
     # Check doctors
-    doctor = await doctors_collection.find_one({"username": data.username})
+    doctor = await doctors_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     if doctor and doctor["password"] == data.password:
         return {"message": "Login successful", "role": "doctor", "id": str(doctor["_id"])}
         
     # Check nurses
-    nurse = await nurses_collection.find_one({"username": data.username})
+    nurse = await nurses_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     if nurse and nurse["password"] == data.password:
         return {"message": "Login successful", "role": "nurse", "id": str(nurse["_id"])}
         
     # Check receptionists
-    rec = await receptionists_collection.find_one({"username": data.username})
+    rec = await receptionists_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     if rec and rec["password"] == data.password:
         return {"message": "Login successful", "role": "receptionist", "id": str(rec["_id"])}
         

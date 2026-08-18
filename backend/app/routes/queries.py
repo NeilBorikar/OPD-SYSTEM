@@ -17,6 +17,7 @@ async def create_query(data: QueryCreateSchema):
         "query_text": data.query_text,
         "created_at": now_iso,
         "status": "pending",
+        "clinic_id": data.clinic_id,
         "forwarded_to_doctor": None,
         "forwarded_to_doctor_name": None,
         "forwarded_by_role": None,

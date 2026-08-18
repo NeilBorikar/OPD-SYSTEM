@@ -21,7 +21,7 @@ def shift_time_str(time_range_str: str, delta_minutes: int) -> str:
 @router.post("/set-session")
 async def set_doctor_session(request: DoctorScheduleRequest):
     # Verify doctor exists
-    doctor = await doctors_collection.find_one({"username": request.doctor_username})
+    doctor = await doctors_collection.find_one({"username": request.doctor_username, "clinic_id": request.clinic_id})
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor not found")
 
@@ -48,7 +48,8 @@ async def set_doctor_session(request: DoctorScheduleRequest):
             raise HTTPException(status_code=400, detail="Cannot create appointments before current time")
 
     # Clear existing slots for this doctor on selected date
-    await slots_collection.delete_many({"doctor_username": request.doctor_username, "date": session_date})
+    await slots_collection.delete_many({"doctor_username": request.doctor_username,
+            "clinic_id": request.clinic_id, "date": session_date})
 
     slots = []
     current_time = start_time
@@ -61,6 +62,7 @@ async def set_doctor_session(request: DoctorScheduleRequest):
         slot_time_str = f"{current_time.strftime('%H:%M')} - {next_time.strftime('%H:%M')}"
         slots.append({
             "doctor_username": request.doctor_username,
+            "clinic_id": request.clinic_id,
             "time": slot_time_str,
             "is_booked": False,
             "is_completed": False,
@@ -77,17 +79,17 @@ async def set_doctor_session(request: DoctorScheduleRequest):
     return {"message": f"Generated {len(slots)} slots for {request.doctor_username} on {session_date}"}
 
 @router.get("/doctors", response_model=List[dict])
-async def get_all_doctors():
-    doctors = await doctors_collection.find({}, {"_id": 0, "username": 1, "full_name": 1}).to_list(1000)
+async def get_all_doctors(clinic_id: str = "IR"):
+    doctors = await doctors_collection.find({"clinic_id": clinic_id}, {"_id": 0, "username": 1, "full_name": 1}).to_list(1000)
     return doctors
 
 @router.get("/", response_model=List[dict])
-async def get_all_slots(date: str = None, doctor_username: str = None):
+async def get_all_slots(date: str = None, doctor_username: str = None, clinic_id: str = "IR"):
     current_date_ist = datetime.now(IST).strftime("%Y-%m-%d")
     if not date:
         date = current_date_ist
     
-    query = {"date": date}
+    query = {"date": date, "clinic_id": clinic_id}
     if doctor_username and doctor_username not in ("null", "undefined", ""):
         query["doctor_username"] = doctor_username
         
@@ -208,13 +210,14 @@ async def complete_slot(slot_id: str):
 
 
 @router.get("/live-queue/{prn}")
-async def get_live_queue(prn: str):
+async def get_live_queue(prn: str, clinic_id: str = "IR"):
     today = datetime.now(IST).strftime("%Y-%m-%d")
     prn_str = str(prn).strip()
     
     # Find patient's active (booked and not completed) slot today
     patient_slot = await slots_collection.find_one({
         "patient_prn": prn_str,
+        "clinic_id": clinic_id,
         "date": today,
         "is_booked": True,
         "is_completed": {"$ne": True}
@@ -224,6 +227,7 @@ async def get_live_queue(prn: str):
         # Check if patient completed a slot today
         completed_slot = await slots_collection.find_one({
             "patient_prn": prn_str,
+        "clinic_id": clinic_id,
             "date": today,
             "is_completed": True
         })
@@ -244,6 +248,7 @@ async def get_live_queue(prn: str):
     # Get all slots for this doctor today sorted by time
     all_doctor_slots = await slots_collection.find({
         "doctor_username": doctor_username,
+        "clinic_id": clinic_id,
         "date": today
     }).to_list(1000)
     
@@ -299,6 +304,7 @@ async def get_live_queue(prn: str):
         "has_booking": True,
         "is_completed": False,
         "doctor_username": doctor_username,
+        "clinic_id": clinic_id,
         "slot_time": patient_slot.get("time"),
         "your_token": your_token,
         "current_patient": current_token,
