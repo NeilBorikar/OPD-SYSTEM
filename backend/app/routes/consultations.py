@@ -65,3 +65,20 @@ async def get_patient_history(prn: str, clinic_id: str = 'IR'):
         records.append(record)
 
     return records
+
+
+# -----------------------------
+# GET UNIVERSAL PATIENT HISTORY 
+# -----------------------------
+@router.get("/consultation/universal/{prn}")
+async def get_universal_history(prn: str):
+    prn = str(prn).strip()
+    records = []
+    # No clinic_id filter!
+    cursor = consultations_collection.find({"prn": prn}).sort("_id", -1)
+    
+    async for record in cursor:
+        record["_id"] = str(record["_id"])
+        records.append(record)
+
+    return records
