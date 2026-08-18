@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getClinics } from "../services/api";
 import "../styles/global.css";
 
 const ClinicSelector = () => {
@@ -11,11 +12,10 @@ const ClinicSelector = () => {
   useEffect(() => {
     const fetchClinics = async () => {
       try {
-        const res = await fetch("http://localhost:8000/AEGIS@12250510/clinics");
-        const data = await res.json();
+        const data = await getClinics();
         setClinics(data);
       } catch (e) {
-        console.error(e);
+        console.error("Error fetching clinics:", e);
       } finally {
         setLoading(false);
       }
@@ -32,9 +32,6 @@ const ClinicSelector = () => {
 
   return (
     <div style={styles.page}>
-      <div style={styles.header}>
-        <button onClick={() => navigate("/register")} style={styles.signUpBtn}>Sign Up as Patient</button>
-      </div>
       
       <div style={styles.card}>
         <h1 style={{ color: "#0f172a", marginBottom: "0.5rem" }}>Select Clinic</h1>
@@ -78,20 +75,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     position: "relative"
-  },
-  header: {
-    position: "absolute",
-    top: "24px",
-    right: "24px"
-  },
-  signUpBtn: {
-    padding: "10px 24px",
-    background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
-    color: "white",
-    border: "none",
-    borderRadius: "30px",
-    cursor: "pointer",
-    fontWeight: "700"
   },
   card: {
     background: "white",

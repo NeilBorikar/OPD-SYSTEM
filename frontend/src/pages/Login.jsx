@@ -93,6 +93,40 @@ function Login() {
 
   return (
     <div className="login-wrapper" style={{ position: "relative" }}>
+      {/* Top Right Sign Up button */}
+      <div style={{
+        position: "absolute",
+        top: "24px",
+        right: "24px",
+        zIndex: 50
+      }}>
+        <button
+          onClick={() => navigate("/register")}
+          style={{
+            padding: "10px 24px",
+            background: "linear-gradient(135deg, #0ea5e9, #0284c7)",
+            color: "white",
+            border: "none",
+            borderRadius: "30px",
+            cursor: "pointer",
+            fontWeight: "700",
+            fontSize: "0.95rem",
+            boxShadow: "0 4px 15px rgba(14, 165, 233, 0.3)",
+            transition: "all 0.2s ease",
+            letterSpacing: "0.5px"
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = "translateY(-1px)";
+            e.currentTarget.style.boxShadow = "0 6px 20px rgba(14, 165, 233, 0.4)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = "none";
+            e.currentTarget.style.boxShadow = "0 4px 15px rgba(14, 165, 233, 0.3)";
+          }}
+        >
+          Sign Up as Patient
+        </button>
+      </div>
       
       
       
