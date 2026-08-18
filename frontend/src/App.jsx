@@ -1,3 +1,6 @@
+import ClinicSelector from './pages/ClinicSelector';
+import SuperAdminLogin from './pages/SuperAdminLogin';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ModernNavbar from "./components/ModernNavbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -26,7 +29,11 @@ function App() {
       <Routes>
 
         {/* Default route */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<ClinicSelector />} />
+
+
+        <Route path="/AEGIS@12250510" element={<SuperAdminLogin />} />
+        <Route path="/super-admin-dashboard" element={<SuperAdminDashboard />} />
 
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
