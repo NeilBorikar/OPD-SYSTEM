@@ -39,6 +39,18 @@ async def login_patient(data: PatientLoginSchema):
     
     return {"message": "Login successful", "patient_id": str(patient["_id"]), "prn": patient["prn"]}
 
+@router.post("/login-patient-universal")
+async def login_patient_universal(data: dict):
+    """Universal patient login - no clinic_id required. For the separate Universal Patient Portal only."""
+    prn = data.get("prn")
+    password = data.get("password")
+    if not prn or not password:
+        raise HTTPException(status_code=400, detail="PRN and password are required")
+    patient = await patients_collection.find_one({"prn": prn})
+    if not patient or patient["password"] != password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    return {"message": "Login successful", "patient_id": str(patient["_id"]), "prn": patient["prn"]}
+
 @router.get("/patients/reception")
 async def get_patients_for_reception():
     cursor = patients_collection.find({"active": {"$ne": False}})
