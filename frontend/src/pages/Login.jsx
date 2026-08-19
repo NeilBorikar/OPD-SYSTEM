@@ -151,9 +151,10 @@ function Login() {
       {/* HERO SECTION */}
       <div className="login-hero-banner">
         <div className="hero-content">
-          <div className="hero-brand-pill">
-            <span className="pulse-dot"></span>
-            <span>SYSTEM ACCESS</span>
+          <div className="pulse-animation-container" style={{ margin: "0 auto 1.5rem", width: "200px", height: "50px", position: "relative" }}>
+            <svg className="pulse-line" viewBox="0 0 200 50" preserveAspectRatio="none" style={{ width: "100%", height: "100%", strokeDasharray: "400", strokeDashoffset: "400", animation: "draw-pulse 3s infinite linear" }}>
+              <path d="M0,25 L50,25 L60,10 L75,40 L85,25 L200,25" fill="none" stroke="rgba(14, 165, 233, 0.6)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            </svg>
           </div>
           <h1 
             className="hero-title"
