@@ -1,0 +1,291 @@
+/* ── Clinic Selector ── */
+
+.cs-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(168deg, #f1f5f9 0%, #e8f0f8 40%, #dde8f0 100%);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* subtle dot-grid texture */
+.cs-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, #cbd5e1 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* ── Card ── */
+.cs-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.04);
+  padding: 2.75rem 2.5rem 2.25rem;
+  max-width: 440px;
+  width: 92%;
+  text-align: center;
+}
+
+/* ── Icon mark ── */
+.cs-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 1.25rem;
+  border-radius: 10px;
+  background: #f0f7fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cs-icon svg {
+  width: 22px;
+  height: 22px;
+  color: #3b82a0;
+}
+
+/* ── Typography ── */
+.cs-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.01em;
+}
+
+.cs-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 2rem;
+  font-weight: 400;
+}
+
+/* ── Custom dropdown ── */
+.cs-dropdown {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.cs-dropdown-trigger {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fafbfc;
+  font-size: 0.925rem;
+  color: #334155;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.cs-dropdown-trigger:focus,
+.cs-dropdown-trigger.cs-open {
+  border-color: #94b8d0;
+  box-shadow: 0 0 0 3px rgba(148, 184, 208, 0.18);
+}
+
+.cs-dropdown-trigger .cs-placeholder {
+  color: #94a3b8;
+}
+
+.cs-chevron {
+  width: 16px;
+  height: 16px;
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.cs-chevron.cs-rotated {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown list ── */
+.cs-dropdown-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 50;
+  padding: 4px;
+}
+
+.cs-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.cs-dropdown-item:hover {
+  background: #f1f5f9;
+}
+
+.cs-dropdown-item.cs-selected {
+  background: #eef4fa;
+  font-weight: 500;
+}
+
+/* clinic initial badge */
+.cs-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #3b6b8a;
+  background: #e4eff6;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.cs-item-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cs-item-id {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* trigger badge (selected item) */
+.cs-trigger-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: #3b6b8a;
+  background: #e4eff6;
+  flex-shrink: 0;
+  margin-right: 0.6rem;
+}
+
+.cs-trigger-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.cs-trigger-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Button ── */
+.cs-btn {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.925rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #3b82a0;
+  color: #ffffff;
+  transition: transform 0.12s ease, opacity 0.15s ease;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  letter-spacing: 0.01em;
+}
+
+.cs-btn:hover:not(:disabled) {
+  transform: scale(1.015);
+}
+
+.cs-btn:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.cs-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ── Spinner ── */
+@keyframes cs-spin {
+  to { transform: rotate(360deg); }
+}
+
+.cs-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: cs-spin 0.6s linear infinite;
+}
+
+/* ── Loading skeleton ── */
+.cs-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cs-skeleton-bar {
+  height: 48px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e8edf2 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: cs-shimmer 1.4s ease infinite;
+}
+
+@keyframes cs-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Footer ── */
+.cs-footer {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  letter-spacing: 0.03em;
+}
