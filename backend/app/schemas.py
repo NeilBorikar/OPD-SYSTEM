@@ -71,6 +71,7 @@ class LoginSchema(BaseModel):
 
 
 class ResetPasswordSchema(BaseModel):
+    clinic_id: str
     username: str
     new_password: str
 

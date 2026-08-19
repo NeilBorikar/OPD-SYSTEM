@@ -50,13 +50,13 @@ async def login(data: LoginSchema):
 async def reset_password(data: ResetPasswordSchema):
     """Reset doctor password"""
     
-    doctor = await doctors_collection.find_one({"username": data.username})
+    doctor = await doctors_collection.find_one({"username": data.username, "clinic_id": data.clinic_id})
     
     if not doctor:
         raise HTTPException(status_code=404, detail="User not found")
     
     result = await doctors_collection.update_one(
-        {"username": data.username},
+        {"username": data.username, "clinic_id": data.clinic_id},
         {"$set": {"password": data.new_password}}
     )
     
