@@ -41,7 +41,6 @@ function DoctorDashboard() {
     return () => clearInterval(queryInterval);
   }, [fetchPatients, fetchDoctorQueriesList]);
 
-
   const handleDeleteQuery = async (queryId) => {
     if (!window.confirm("Are you sure you want to delete this query?")) return;
     try {
@@ -215,7 +214,7 @@ function DoctorDashboard() {
       <section style={{ marginBottom: "30px", padding: "20px", border: "1px solid #e2e8f0", borderRadius: "12px", backgroundColor: "white", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
           <h3 style={{ margin: 0, color: "#1e293b", display: "flex", alignItems: "center", gap: "10px" }}>
-            <span style={{ fontSize: "1.5rem" }}>ðŸ’¬</span> Forwarded Patient Queries
+            <span style={{ fontSize: "1.5rem" }}>💬</span> Forwarded Patient Queries
           </h3>
           <span style={{ padding: "4px 12px", backgroundColor: "#f3e8ff", color: "#6b21a8", borderRadius: "12px", fontSize: "0.85rem", fontWeight: "700" }}>
             {queries.filter(q => q.status !== "answered").length} Forwarded to You
@@ -251,7 +250,7 @@ function DoctorDashboard() {
                     backgroundColor: q.status === "answered" ? "#dcfce7" : "#f3e8ff",
                     color: q.status === "answered" ? "#166534" : "#6b21a8"
                   }}>
-                    {q.status === "answered" ? `âœ… Answered by You` : "âŒ› Pending Your Answer"}
+                    {q.status === "answered" ? `✅ Answered by You` : "⌛ Pending Your Answer"}
                   </span>
                 </div>
 
@@ -261,8 +260,16 @@ function DoctorDashboard() {
 
                 {q.status === "answered" ? (
                   <div style={{ padding: "10px 14px", backgroundColor: "#f0fdf4", borderRadius: "8px", borderLeft: "4px solid #22c55e" }}>
-                    <div style={{ fontSize: "0.8rem", fontWeight: "700", color: "#166534" }}>Your Answer:</div>
-                    <div style={{ fontSize: "0.95rem", color: "#14532d" }}>{q.answer_text}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ fontSize: "0.8rem", fontWeight: "700", color: "#166534" }}>Your Answer:</div>
+                      <button
+                        onClick={() => handleDeleteQuery(q._id)}
+                        style={{ padding: "4px 8px", backgroundColor: "#ef4444", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "bold" }}
+                      >
+                        Delete Query
+                      </button>
+                    </div>
+                    <div style={{ fontSize: "0.95rem", color: "#14532d", marginTop: "4px" }}>{q.answer_text}</div>
                   </div>
                 ) : (
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>

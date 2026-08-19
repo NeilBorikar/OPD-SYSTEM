@@ -47,7 +47,6 @@ function ReceptionistDashboard() {
     return () => clearInterval(queryInterval);
   }, [fetchPatients, fetchQueries, fetchDoctorsList]);
 
-
   const handleDeleteQuery = async (queryId) => {
     if (!window.confirm("Are you sure you want to delete this query?")) return;
     try {
@@ -150,8 +149,16 @@ function ReceptionistDashboard() {
 
                 {q.status === "answered" ? (
                   <div style={{ padding: "12px", backgroundColor: "#f0fdf4", borderRadius: "8px", borderLeft: "4px solid #22c55e" }}>
-                    <div style={{ fontSize: "0.8rem", fontWeight: "700", color: "#166534" }}>Answer:</div>
-                    <div style={{ fontSize: "0.95rem", color: "#14532d" }}>{q.answer_text}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ fontSize: "0.8rem", fontWeight: "700", color: "#166534" }}>Answer:</div>
+                      <button
+                        onClick={() => handleDeleteQuery(q._id)}
+                        style={{ padding: "4px 8px", backgroundColor: "#ef4444", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "0.75rem", fontWeight: "bold" }}
+                      >
+                        Delete Query
+                      </button>
+                    </div>
+                    <div style={{ fontSize: "0.95rem", color: "#14532d", marginTop: "4px" }}>{q.answer_text}</div>
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
