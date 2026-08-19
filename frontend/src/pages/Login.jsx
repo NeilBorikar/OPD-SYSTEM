@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { loginUnified, loginPatient } from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/global.css";
@@ -16,6 +16,24 @@ function Login() {
   const [patientError, setPatientError] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // If the flag is missing, it means the user refreshed the page, pressed 'back',
+    // or manually typed '/login'. Redirect them to select a clinic first.
+    if (!sessionStorage.getItem("login_active")) {
+      navigate("/");
+    }
+
+    // When the user unloads this page (refresh or back button), clear the flag
+    // so the next time the component mounts, it will fail the check and redirect.
+    const handleUnload = () => sessionStorage.removeItem("login_active");
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+      sessionStorage.removeItem("login_active");
+    };
+  }, [navigate]);
 
   // Accordion toggle state: 'staff', 'patient', or null (both collapsed)
   const [expandedCard, setExpandedCard] = useState(null);

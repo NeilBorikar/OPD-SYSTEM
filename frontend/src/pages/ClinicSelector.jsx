@@ -26,6 +26,7 @@ const ClinicSelector = () => {
   const handleProceed = () => {
     if (selectedClinic) {
       localStorage.setItem("clinic_id", selectedClinic);
+      sessionStorage.setItem("login_active", "true");
       navigate("/login");
     }
   };
