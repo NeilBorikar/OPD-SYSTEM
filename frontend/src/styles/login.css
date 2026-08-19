@@ -405,11 +405,9 @@
   }
 }
 
- @ k e y f r a m e s   d r a w - p u l s e   { 
-     0 %   {   s t r o k e - d a s h o f f s e t :   4 0 0 ;   o p a c i t y :   0 ;   } 
-     2 0 %   {   o p a c i t y :   1 ;   } 
-     8 0 %   {   s t r o k e - d a s h o f f s e t :   0 ;   o p a c i t y :   1 ;   } 
-     1 0 0 %   {   s t r o k e - d a s h o f f s e t :   - 1 0 0 ;   o p a c i t y :   0 ;   } 
- } 
-  
- 
+@keyframes draw-pulse {
+  0% { stroke-dashoffset: 400; opacity: 0; }
+  20% { opacity: 1; }
+  80% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
