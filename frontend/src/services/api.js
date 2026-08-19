@@ -283,6 +283,14 @@ export const forwardQuery = async (queryId, data) => {
   if (!response.ok) throw new Error("Failed to forward query");
   return response.json();
 };
+export const deleteQuery = async (queryId) => {
+  const response = await fetch(`${API_BASE}/queries/${queryId}`, {
+    method: "DELETE"
+  });
+  if (!response.ok) throw new Error("Failed to delete query");
+  return response.json();
+};
+
 export const getClinics = async () => {
   const response = await fetch(`${API_BASE}/AEGIS@12250510/clinics`);
   if (!response.ok) throw new Error('Failed to fetch clinics');

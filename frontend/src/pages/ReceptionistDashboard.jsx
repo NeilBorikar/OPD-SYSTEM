@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getPatientsReception, updatePatient, getStaffQueries, getDoctors, answerQuery, forwardQuery } from "../services/api";
+import { getPatientsReception, updatePatient, getStaffQueries, getDoctors, answerQuery, forwardQuery, deleteQuery } from "../services/api";
 import SlotMonitor from "../components/SlotMonitor";
 
 function ReceptionistDashboard() {
@@ -46,6 +46,18 @@ function ReceptionistDashboard() {
     const queryInterval = setInterval(fetchQueries, 15000);
     return () => clearInterval(queryInterval);
   }, [fetchPatients, fetchQueries, fetchDoctorsList]);
+
+
+  const handleDeleteQuery = async (queryId) => {
+    if (!window.confirm("Are you sure you want to delete this query?")) return;
+    try {
+      await deleteQuery(queryId);
+      alert("Query deleted successfully.");
+      fetchQueries();
+    } catch (err) {
+      alert("Failed to delete query: " + err.message);
+    }
+  };
 
   const handleAnswerSubmit = async (queryId) => {
     const text = answerInputs[queryId];

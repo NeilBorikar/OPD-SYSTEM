@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getPatientsOrdered, assignTask, setDoctorSession, updatePatient, getDoctorQueries, answerQuery } from "../services/api";
+import { getPatientsOrdered, assignTask, setDoctorSession, updatePatient, getDoctorQueries, answerQuery, deleteQuery } from "../services/api";
 import SlotMonitor from "../components/SlotMonitor";
 
 function DoctorDashboard() {
@@ -40,6 +40,18 @@ function DoctorDashboard() {
     const queryInterval = setInterval(fetchDoctorQueriesList, 15000);
     return () => clearInterval(queryInterval);
   }, [fetchPatients, fetchDoctorQueriesList]);
+
+
+  const handleDeleteQuery = async (queryId) => {
+    if (!window.confirm("Are you sure you want to delete this query?")) return;
+    try {
+      await deleteQuery(queryId);
+      alert("Query deleted successfully.");
+      fetchDoctorQueriesList();
+    } catch (err) {
+      alert("Failed to delete query: " + err.message);
+    }
+  };
 
   const handleAnswerSubmit = async (queryId) => {
     const text = answerInputs[queryId];
@@ -203,7 +215,7 @@ function DoctorDashboard() {
       <section style={{ marginBottom: "30px", padding: "20px", border: "1px solid #e2e8f0", borderRadius: "12px", backgroundColor: "white", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
           <h3 style={{ margin: 0, color: "#1e293b", display: "flex", alignItems: "center", gap: "10px" }}>
-            <span style={{ fontSize: "1.5rem" }}>💬</span> Forwarded Patient Queries
+            <span style={{ fontSize: "1.5rem" }}>ðŸ’¬</span> Forwarded Patient Queries
           </h3>
           <span style={{ padding: "4px 12px", backgroundColor: "#f3e8ff", color: "#6b21a8", borderRadius: "12px", fontSize: "0.85rem", fontWeight: "700" }}>
             {queries.filter(q => q.status !== "answered").length} Forwarded to You
@@ -239,7 +251,7 @@ function DoctorDashboard() {
                     backgroundColor: q.status === "answered" ? "#dcfce7" : "#f3e8ff",
                     color: q.status === "answered" ? "#166534" : "#6b21a8"
                   }}>
-                    {q.status === "answered" ? `✅ Answered by You` : "⌛ Pending Your Answer"}
+                    {q.status === "answered" ? `âœ… Answered by You` : "âŒ› Pending Your Answer"}
                   </span>
                 </div>
 

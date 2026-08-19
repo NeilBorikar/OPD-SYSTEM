@@ -105,3 +105,14 @@ async def forward_query(query_id: str, data: QueryForwardSchema):
         raise HTTPException(status_code=404, detail="Query not found")
         
     return {"message": f"Query forwarded to Dr. {data.doctor_name} successfully"}
+
+@router.delete("/{query_id}")
+async def delete_query(query_id: str):
+    if not ObjectId.is_valid(query_id):
+        raise HTTPException(status_code=400, detail="Invalid Query ID")
+
+    result = await queries_collection.delete_one({"_id": ObjectId(query_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Query not found")
+        
+    return {"message": "Query deleted successfully"}

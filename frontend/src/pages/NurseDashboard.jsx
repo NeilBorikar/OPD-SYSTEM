@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { getPatientsOrdered, getNurseTasks, completeTask, updatePatient, getStaffQueries, getDoctors, answerQuery, forwardQuery } from "../services/api";
+import { getPatientsOrdered, getNurseTasks, completeTask, updatePatient, getStaffQueries, getDoctors, answerQuery, forwardQuery, deleteQuery } from "../services/api";
 import { useLocation, Link } from "react-router-dom";
 import SlotMonitor from "../components/SlotMonitor";
 
@@ -60,6 +60,18 @@ function NurseDashboard() {
     const queryInterval = setInterval(fetchQueries, 15000);
     return () => clearInterval(queryInterval);
   }, [fetchPatients, fetchRecentTasks, fetchQueries, fetchDoctorsList]);
+
+
+  const handleDeleteQuery = async (queryId) => {
+    if (!window.confirm("Are you sure you want to delete this query?")) return;
+    try {
+      await deleteQuery(queryId);
+      alert("Query deleted successfully.");
+      fetchQueries();
+    } catch (err) {
+      alert("Failed to delete query: " + err.message);
+    }
+  };
 
   const handleCompleteTask = async (taskId) => {
     try {
