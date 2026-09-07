@@ -23,7 +23,8 @@ async def fetch_patient_and_records(prn: str):
     prn = str(prn).strip()
     patient = await patients_collection.find_one({"prn": prn})
     if not patient:
-        raise HTTPException(status_code=404, detail="Patient not found")
+        # Patient profile may not exist yet but consultations might
+        patient = {"prn": prn, "name": "Patient", "age": None, "sex": None}
         
     records = []
     cursor = consultations_collection.find({"prn": prn}).sort("_id", 1) # Chronological

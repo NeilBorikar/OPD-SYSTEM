@@ -7,6 +7,7 @@ const Login = () => {
   const [patientForm, setPatientForm] = useState({ prn: "", password: "" });
   const [patientLoading, setPatientLoading] = useState(false);
   const [patientError, setPatientError] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
 
   const handlePatientChange = (e) => {
@@ -40,6 +41,11 @@ const Login = () => {
     <div className="login-wrapper" style={{ position: "relative" }}>
       <div className="login-hero-banner">
         <div className="hero-content">
+          <div className="pulse-animation-container" style={{ margin: "0 auto 1.5rem" }}>
+            <svg className="pulse-line" viewBox="0 0 200 50" preserveAspectRatio="none">
+              <path d="M0,25 L50,25 L60,10 L75,40 L85,25 L200,25" fill="none" stroke="rgba(14, 165, 233, 0.6)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+            </svg>
+          </div>
           <div className="hero-brand-pill">
             <span className="pulse-dot"></span>
             <span>UNIVERSAL PATIENT PORTAL</span>
@@ -53,17 +59,22 @@ const Login = () => {
         </div>
       </div>
 
-      <div className="login-cards-container" style={{ justifyContent: "center", display: "flex", width: "100%", maxWidth: "800px" }}>
-        <div className="login-card patient-card expanded" style={{ maxWidth: "450px", width: "100%" }}>
-          <div className="card-header" style={{ cursor: "default" }}>
+      <div className="login-cards-container" style={{ justifyContent: "center", display: "flex", width: "100%", maxWidth: "800px", margin: "-3.5rem auto 0" }}>
+        <div className={`login-card patient-card ${isExpanded ? "expanded" : "collapsed"}`} style={{ maxWidth: "440px", width: "100%" }}>
+          <div className="card-header" onClick={() => setIsExpanded(!isExpanded)}>
             <div className="card-icon patient-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
                 <line x1="7" y1="7" x2="7.01" y2="7" />
               </svg>
             </div>
-            <h3>Universal Login</h3>
-            <p>View your global records</p>
+            <h3>Patient Login</h3>
+            <p>View your records & history</p>
+            <div className="expand-indicator">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
           </div>
 
           <div className="card-body">
@@ -72,7 +83,7 @@ const Login = () => {
               <input
                 name="prn"
                 type="text"
-                placeholder="Enter your universal PRN"
+                placeholder="Enter PRN"
                 value={patientForm.prn}
                 onChange={handlePatientChange}
                 onKeyPress={handlePatientKeyPress}
@@ -110,3 +121,4 @@ const Login = () => {
 };
 
 export default Login;
+
