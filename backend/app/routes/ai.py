@@ -62,7 +62,15 @@ async def get_record_summary(prn: str):
     patient, records = await fetch_patient_and_records(prn)
     
     if not records:
-        return {"summary_text": "No medical records found."}
+        return {
+            "summary_text": "No medical records found.",
+            "stats": {
+                "total_consultations": 0,
+                "total_prescriptions": 0,
+                "clinics_visited": 0,
+                "most_recent_visit": "None"
+            }
+        }
 
     # Compute stats
     clinics = set()
