@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     TWILIO_AUTH_TOKEN: Optional[str] = None
     TWILIO_PHONE_NUMBER: Optional[str] = None
     TWILIO_DEFAULT_COUNTRY_CODE: str = "+91"
+    
+    # Gemini AI
+    gemini_api_key: Optional[str] = None
 
     class Config:
         env_file = ".env"

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import patients, consultations, slots, tasks, auth, queries, super_admin
+from app.routes import patients, consultations, slots, tasks, auth, queries, super_admin, ai
 app = FastAPI()
 
 app.add_middleware(
@@ -19,6 +19,7 @@ app.include_router(slots.router, prefix="/slots", tags=["slots"])
 app.include_router(tasks.router, prefix="/tasks", tags=["tasks"])
 app.include_router(queries.router, prefix="/queries", tags=["queries"])
 app.include_router(super_admin.router, prefix="/AEGIS@12250510", tags=["SuperAdmin"])
+app.include_router(ai.router, prefix="/ai", tags=["AI Features"])
 
 @app.get("/")
 def home():

@@ -2,23 +2,22 @@ import asyncio
 import os
 import sys
 
-# Add backend directory to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.config import settings
 
 async def migrate_data():
-    print(f'Connecting to {settings.MONGO_URL}...')
-    print(f'Using database: {settings.DATABASE_NAME}')
+    print(f'Connecting to MongoDB...')
     client = AsyncIOMotorClient(settings.MONGO_URL)
     
-    # Use clinic_db - same database as all the other collections
-    db = client[settings.DATABASE_NAME]
+    # FORCE clinic_db regardless of any env override
+    db = client['clinic_db']
+    print(f'Explicitly targeting database: clinic_db')
     
     clinics = db['clinics']
     
-    # 1. Create or get 'IR' clinic in clinic_db
+    # 1. Create IR clinic in clinic_db
     ir_clinic = await clinics.find_one({'clinic_id': 'IR'})
     if not ir_clinic:
         print('Creating IR clinic in clinic_db...')
@@ -30,45 +29,33 @@ async def migrate_data():
             'email': 'ir@clinic.com',
             'verification_status': 'verified'
         })
-        print('IR clinic created.')
+        print('IR clinic created!')
     else:
         print('IR clinic already exists in clinic_db.')
 
-    # 2. Also clean up the old Medical_database clinics if it exists
-    old_db = client['Medical_database']
-    old_clinics = old_db['clinics']
-    old_count = await old_clinics.count_documents({})
-    if old_count > 0:
-        print(f'Found {old_count} clinics in old Medical_database. These are orphaned - the app uses clinic_db.')
-
     collections_to_update = [
-        'consultations',
-        'doctors',
-        'nurses',
-        'receptionists',
-        'slots',
-        'tasks',
-        'queries'
+        'consultations', 'doctors', 'nurses', 'receptionists',
+        'slots', 'tasks', 'queries'
     ]
     
     for coll_name in collections_to_update:
         collection = db[coll_name]
-        
-        # Count total documents
         total = await collection.count_documents({})
-        # Count documents missing clinic_id
         missing = await collection.count_documents({'clinic_id': {'$exists': False}})
-        print(f'{coll_name}: {total} total, {missing} missing clinic_id')
+        print(f'  {coll_name}: {total} total, {missing} missing clinic_id')
         
         if missing > 0:
             result = await collection.update_many(
                 {'clinic_id': {'$exists': False}},
                 {'$set': {'clinic_id': 'IR'}}
             )
-            print(f'  -> Updated {result.modified_count} documents with clinic_id=IR')
+            print(f'    -> Updated {result.modified_count} documents')
 
-    print('\nMigration complete!')
-    print(f'All data is now in database: {settings.DATABASE_NAME}')
+    # Verify
+    count = await clinics.count_documents({})
+    print(f'\nVerification: clinic_db.clinics has {count} clinic(s)')
+    
+    print('Migration complete!')
     client.close()
 
 if __name__ == '__main__':
