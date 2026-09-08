@@ -14,6 +14,24 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
+@router.get("/health")
+async def ai_health_check():
+    """Diagnostic endpoint to verify Gemini initialization."""
+    from app.utils.ai_engine import _get_model
+    from app.config import settings
+    
+    has_key = bool(settings.gemini_api_key)
+    key_preview = settings.gemini_api_key[:8] + "..." if settings.gemini_api_key else "NOT SET"
+    m = _get_model()
+    
+    return {
+        "gemini_api_key_set": has_key,
+        "key_preview": key_preview,
+        "model_initialized": m is not None,
+        "model_name": "gemini-2.0-flash" if m else None,
+        "status": "ready" if m else "unavailable"
+    }
+
 class AskRequest(BaseModel):
     prn: str
     question: str

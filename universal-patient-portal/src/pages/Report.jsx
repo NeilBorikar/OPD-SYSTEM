@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { getReport } from "../services/api";
-import { Download, FileText, CheckCircle } from "lucide-react";
+import { Download, FileText, CheckCircle, Activity } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
