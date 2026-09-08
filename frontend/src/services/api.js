@@ -24,6 +24,11 @@ export const saveConsultation = async (data) => {
     body: JSON.stringify(data)
   });
 
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.detail ? JSON.stringify(err.detail) : "Failed to save consultation");
+  }
+
   return response.json();
 };
 

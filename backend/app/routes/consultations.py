@@ -32,7 +32,8 @@ async def create_consultation(data: Consultation):
             "sex": consultation.get("sex", "Other"),
             "severityIndex": severity,
             "tasks_for_nurse": [],
-            "password": "1234" # Default password
+            "password": "1234", # Default password
+            "clinic_id": consultation.get("clinic_id", "IR")
         }
         await patients_collection.insert_one(new_patient)
     else:

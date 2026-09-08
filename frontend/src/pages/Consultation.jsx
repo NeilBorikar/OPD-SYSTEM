@@ -52,6 +52,8 @@ function Consultation() {
 
     const payload = {
       ...formData,
+      age: parseInt(formData.age, 10) || 0,
+      clinic_id: localStorage.getItem("clinic_id") || "IR",
       medicines
     };
 

@@ -38,30 +38,30 @@ class SuperAdminLoginSchema(BaseModel):
     password: str
 
 class Consultation(BaseModel):
-    clinic_id: str
+    clinic_id: Optional[str] = "IR"
 
     patient_name: str
-    age: int
-    sex: str
+    age: Optional[int] = 0
+    sex: Optional[str] = ""
     prn: str
 
-    bp: str
-    pulse: str
-    spo2: str
-    weight: str
-    height: str
-    bmi: str
+    bp: Optional[str] = ""
+    pulse: Optional[str] = ""
+    spo2: Optional[str] = ""
+    weight: Optional[str] = ""
+    height: Optional[str] = ""
+    bmi: Optional[str] = ""
 
-    complaints: str
-    examination: str
-    past_history: str
-    allergy: str
-    diagnosis: str
+    complaints: Optional[str] = ""
+    examination: Optional[str] = ""
+    past_history: Optional[str] = ""
+    allergy: Optional[str] = ""
+    diagnosis: Optional[str] = ""
 
-    medicines: List[Medicine]
+    medicines: List[Medicine] = []
 
-    advice: str
-    investigations: str
+    advice: Optional[str] = ""
+    investigations: Optional[str] = ""
     severityIndex: Optional[str] = "normal"
 
 class LoginSchema(BaseModel):
