@@ -1,5 +1,5 @@
-const API_BASE = "https://corepulse-ysxr.onrender.com";
-
+// const API_BASE = "https://corepulse-ysxr.onrender.com";
+const API_BASE = "http://127.0.0.1:8000";
 export const registerPatient = async (data) => {
 
   const response = await fetch(`${API_BASE}/register`, {

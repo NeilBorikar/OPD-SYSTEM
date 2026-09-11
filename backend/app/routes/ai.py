@@ -28,7 +28,7 @@ async def ai_health_check():
         "gemini_api_key_set": has_key,
         "key_preview": key_preview,
         "model_initialized": m is not None,
-        "model_name": "gemini-2.0-flash" if m else None,
+        "model_name": "gemini-3.6-flash" if m else None,
         "status": "ready" if m else "unavailable"
     }
 

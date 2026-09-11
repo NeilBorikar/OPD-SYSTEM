@@ -38,7 +38,7 @@ def _get_model():
         }
         
         model = genai.GenerativeModel(
-            model_name="gemini-2.0-flash",
+            model_name="gemini-3.6-flash",
             generation_config=generation_config,
         )
         logger.info("Gemini model initialized successfully")
