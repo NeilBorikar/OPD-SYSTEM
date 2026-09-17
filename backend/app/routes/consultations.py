@@ -17,6 +17,10 @@ async def create_consultation(data: Consultation):
     prn_str = str(consultation["prn"]).strip()
     consultation["prn"] = prn_str
 
+    if not consultation.get("consultationDate"):
+        import datetime
+        consultation["consultationDate"] = datetime.datetime.now().strftime("%Y-%m-%d")
+
     result = await consultations_collection.insert_one(consultation)
     
     # Ensure Patient exists in patients_collection so they show up on Dashboards

@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 logger = logging.getLogger(__name__)
 
 # Thread pool for running synchronous Gemini SDK calls without blocking the event loop
-_executor = ThreadPoolExecutor(max_workers=3)
+_executor = ThreadPoolExecutor(max_workers=10)
 
 # Lazy initialization - don't crash the whole backend if google-generativeai isn't installed
 model = None
@@ -60,7 +60,11 @@ def _sync_generate(prompt, json_mode=False):
     if json_mode:
         config["response_mime_type"] = "application/json"
     
-    response = m.generate_content(prompt, generation_config=config if config else None)
+    response = m.generate_content(
+        prompt, 
+        generation_config=config if config else None,
+        request_options={"timeout": 20}
+    )
     return response.text
 
 async def _generate(prompt, json_mode=False, timeout=25):

@@ -39,6 +39,7 @@ class SuperAdminLoginSchema(BaseModel):
 
 class Consultation(BaseModel):
     clinic_id: Optional[str] = "IR"
+    consultationDate: Optional[str] = None
 
     patient_name: str
     age: Optional[int] = 0

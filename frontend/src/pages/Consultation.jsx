@@ -175,7 +175,7 @@ const handleDownloadPDF = async () => {
               </select>
             </p>
             <p><b>Department :</b> Neurosurgery</p>
-            <p><b>Consultation Date :</b> <input type="date"/></p>
+            <p><b>Consultation Date :</b> <input type="date" name="consultationDate" value={formData.consultationDate || ""} onChange={handleChange}/></p>
             {/* Consultant section removed */}
           </div>              
         </div>
