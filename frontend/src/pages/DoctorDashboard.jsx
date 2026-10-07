@@ -125,6 +125,7 @@ function DoctorDashboard() {
 
     try {
       await setDoctorSession({
+        clinic_id: localStorage.getItem("clinic_id") || "IR",
         doctor_username: doctorUsername,
         start_time: startTimeClean,
         end_time: endTimeClean,
