@@ -211,6 +211,8 @@ export const getSlots = async (date = null, doctorUsername = null) => {
   if (date) params.append("date", date);
   if (doctorUsername) params.append("doctor_username", doctorUsername);
   
+  const clinicId = localStorage.getItem("clinic_id") || "IR";
+  params.append("clinic_id", clinicId);
   if (params.toString()) {
     url += `?${params.toString()}`;
   }
@@ -219,24 +221,27 @@ export const getSlots = async (date = null, doctorUsername = null) => {
 };
 
 export const getDoctors = async () => {
-  const response = await fetch(`${API_BASE}/slots/doctors`);
+  const clinicId = localStorage.getItem("clinic_id") || "IR";
+  const response = await fetch(`${API_BASE}/slots/doctors?clinic_id=${clinicId}`);
   if (!response.ok) throw new Error("Failed to fetch doctors");
   return response.json();
 };
 
 export const bookSlot = async (slotId, patientPrn) => {
-  const response = await fetch(`${API_BASE}/slots/book?slot_id=${slotId}&patient_prn=${patientPrn}`, {
+  const clinicId = localStorage.getItem("clinic_id") || "IR";
+  const response = await fetch(`${API_BASE}/slots/book?slot_id=${encodeURIComponent(slotId)}&patient_prn=${encodeURIComponent(patientPrn)}&clinic_id=${encodeURIComponent(clinicId)}`, {
     method: "POST"
   });
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.detail || "Booking failed");
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail ? (typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail)) : "Booking failed");
   }
   return response.json();
 };
 
 export const getLiveQueueStatus = async (prn) => {
-  const response = await fetch(`${API_BASE}/slots/live-queue/${prn}`);
+  const clinicId = localStorage.getItem("clinic_id") || "IR";
+  const response = await fetch(`${API_BASE}/slots/live-queue/${prn}?clinic_id=${clinicId}`);
   if (!response.ok) throw new Error("Failed to fetch live queue status");
   return response.json();
 };
@@ -247,7 +252,10 @@ export const createPatientQuery = async (data) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
-  if (!response.ok) throw new Error("Failed to submit query");
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail ? (typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail)) : "Failed to submit query");
+  }
   return response.json();
 };
 

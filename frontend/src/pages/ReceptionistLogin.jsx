@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function ReceptionistLogin() {
   const [form, setForm] = useState({
+    clinic_id: localStorage.getItem("clinic_id") || "IR",
     username: "",
     password: ""
   });

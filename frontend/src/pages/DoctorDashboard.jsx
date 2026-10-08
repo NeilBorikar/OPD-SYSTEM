@@ -145,7 +145,11 @@ function DoctorDashboard() {
       return;
     }
     try {
-      await assignTask(taskForm.prn, { task: taskForm.task, nurse_username: taskForm.nurse_username });
+      await assignTask(taskForm.prn, { 
+        clinic_id: localStorage.getItem("clinic_id") || "IR",
+        task: taskForm.task, 
+        nurse_username: taskForm.nurse_username 
+      });
       alert("Task assigned successfully");
       setTaskForm({ prn: "", task: "", nurse_username: "" });
       fetchPatients();

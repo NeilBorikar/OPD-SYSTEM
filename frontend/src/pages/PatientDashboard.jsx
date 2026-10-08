@@ -73,6 +73,7 @@ function PatientDashboard() {
     setSubmittingQuery(true);
     try {
       await createPatientQuery({
+        clinic_id: localStorage.getItem("clinic_id") || "IR",
         patient_prn: prn,
         patient_name: patientData?.name || "Patient",
         query_text: newQueryText.trim()

@@ -3,7 +3,11 @@ import { loginPatient } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 function PatientLogin() {
-  const [form, setForm] = useState({ prn: "", password: "" });
+  const [form, setForm] = useState({ 
+    clinic_id: localStorage.getItem("clinic_id") || "IR",
+    prn: "", 
+    password: "" 
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);

@@ -49,7 +49,11 @@ const Register = () => {
 
   try {
 
-    const result = await registerPatient(patient);
+    const payload = {
+      ...patient,
+      clinic_id: localStorage.getItem("clinic_id") || "IR"
+    };
+    const result = await registerPatient(payload);
 
     console.log("Registered:", result);
 
