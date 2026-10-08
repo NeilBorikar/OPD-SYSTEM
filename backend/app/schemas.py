@@ -84,6 +84,7 @@ class DoctorRegisterSchema(BaseModel):
     full_name: str
 
 class DoctorLoginSchema(BaseModel):
+    clinic_id: str = "IR"
     username: str
     password: str
 
@@ -106,6 +107,7 @@ class NurseRegisterSchema(BaseModel):
     full_name: str
 
 class NurseLoginSchema(BaseModel):
+    clinic_id: str = "IR"
     username: str
     password: str
 
@@ -117,10 +119,12 @@ class ReceptionistRegisterSchema(BaseModel):
     full_name: str
 
 class ReceptionistLoginSchema(BaseModel):
+    clinic_id: str = "IR"
     username: str
     password: str
 
 class PatientRegisterSchema(BaseModel):
+    clinic_id: str = "IR"
     prn: Optional[str] = None
     name: str
     password: str

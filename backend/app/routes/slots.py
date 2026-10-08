@@ -116,34 +116,36 @@ async def get_all_slots(date: str = None, doctor_username: str = None, clinic_id
     return slots
 
 @router.post("/book")
-async def book_slot(slot_id: str, patient_prn: str):
+async def book_slot(slot_id: str, patient_prn: str, clinic_id: str = "IR"):
+    patient_prn_clean = patient_prn.strip()
     # Verify patient exists
-    patient = await patients_collection.find_one({"prn": patient_prn})
+    patient = await patients_collection.find_one({"prn": patient_prn_clean})
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
 
     # Check if patient already booked a slot today
     today = datetime.now(IST).strftime("%Y-%m-%d")
     existing_booking = await slots_collection.find_one({
-        "patient_prn": patient_prn,
+        "patient_prn": patient_prn_clean,
         "date": today,
+        "clinic_id": clinic_id,
         "is_booked": True
     })
     if existing_booking:
         raise HTTPException(status_code=400, detail="Patient has already booked a slot today")
 
     # Check if slot exists and is not booked
-    slot = await slots_collection.find_one({"_id": ObjectId(slot_id)})
+    slot = await slots_collection.find_one({"_id": ObjectId(slot_id), "clinic_id": clinic_id})
     if not slot:
-        raise HTTPException(status_code=404, detail="Slot not found")
+        raise HTTPException(status_code=404, detail="Slot not found in this clinic")
     
     if slot["is_booked"]:
         raise HTTPException(status_code=400, detail="Slot is already booked")
 
     # Book the slot
     result = await slots_collection.update_one(
-        {"_id": ObjectId(slot_id)},
-        {"$set": {"is_booked": True, "patient_prn": patient_prn}}
+        {"_id": ObjectId(slot_id), "clinic_id": clinic_id},
+        {"$set": {"is_booked": True, "patient_prn": patient_prn_clean}}
     )
 
     if result.modified_count == 0:
